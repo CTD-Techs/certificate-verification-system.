@@ -20,6 +20,19 @@ export class TextractService {
     this.mockMode = process.env.AWS_TEXTRACT_MOCK_MODE === 'true';
     this.enabled = process.env.AWS_TEXTRACT_ENABLED === 'true';
 
+    // DIAGNOSTIC LOGGING - Debug environment variables
+    console.log('========================================');
+    console.log('[TEXTRACT DIAGNOSTIC] Environment Variables:');
+    console.log('[TEXTRACT] AWS_REGION:', process.env.AWS_REGION);
+    console.log('[TEXTRACT] AWS_TEXTRACT_MOCK_MODE:', process.env.AWS_TEXTRACT_MOCK_MODE);
+    console.log('[TEXTRACT] AWS_TEXTRACT_ENABLED:', process.env.AWS_TEXTRACT_ENABLED);
+    console.log('[TEXTRACT] AWS_ACCESS_KEY_ID present:', !!process.env.AWS_ACCESS_KEY_ID);
+    console.log('[TEXTRACT] AWS_SECRET_ACCESS_KEY present:', !!process.env.AWS_SECRET_ACCESS_KEY);
+    console.log('[TEXTRACT] Computed mockMode:', this.mockMode);
+    console.log('[TEXTRACT] Computed enabled:', this.enabled);
+    console.log('[TEXTRACT] Will use MOCK:', this.mockMode || !this.enabled);
+    console.log('========================================');
+
     // Initialize Textract client
     this.textractClient = new TextractClient({
       region: this.region,

@@ -602,36 +602,86 @@ class VerificationOrchestratorService {
    * Retry failed verification
    */
   async retryVerification(verificationId: string, userId?: string): Promise<Verification> {
-    const verification = await this.getVerification(verificationId);
-
-    if (verification.status !== VerificationStatus.FAILED) {
-      throw new Error('Can only retry failed verifications');
-    }
-
-    // Reset verification
-    verification.status = VerificationStatus.IN_PROGRESS;
-    verification.result = undefined;
-    verification.confidenceScore = undefined;
-    verification.resultData = undefined;
-    verification.completedAt = undefined;
-    verification.durationMs = undefined;
-    verification.startedAt = new Date();
-
-    await this.verificationRepository.save(verification);
-
-    // Delete old steps
-    await this.stepRepository.delete({ verificationId });
-
-    // Run pipeline again
-    this.runVerificationPipeline(verificationId, verification.certificate, userId)
-      .catch((error) => {
-        logger.error('Retry verification failed', {
-          verificationId,
-          error: error.message,
-        });
+    try {
+      // DEBUG: Log retry start
+      logger.info('[ORCHESTRATOR] Starting retry verification', {
+        verificationId,
+        userId,
       });
 
-    return verification;
+      const verification = await this.getVerification(verificationId);
+
+      // DEBUG: Log verification details
+      logger.info('[ORCHESTRATOR] Verification loaded', {
+        verificationId,
+        status: verification.status,
+        certificateId: verification.certificateId,
+        hasCertificate: !!verification.certificate,
+        certificateType: verification.certificate?.certificateType,
+      });
+
+      if (verification.status !== VerificationStatus.FAILED) {
+        logger.error('[ORCHESTRATOR] Cannot retry non-failed verification', {
+          verificationId,
+          currentStatus: verification.status,
+        });
+        throw new Error('Can only retry failed verifications');
+      }
+
+      // Check if certificate is loaded
+      if (!verification.certificate) {
+        logger.error('[ORCHESTRATOR] Certificate not loaded with verification', {
+          verificationId,
+          certificateId: verification.certificateId,
+        });
+        throw new Error('Certificate not found for verification');
+      }
+
+      // Reset verification
+      logger.info('[ORCHESTRATOR] Resetting verification state', { verificationId });
+      verification.status = VerificationStatus.IN_PROGRESS;
+      verification.result = undefined;
+      verification.confidenceScore = undefined;
+      verification.resultData = undefined;
+      verification.completedAt = undefined;
+      verification.durationMs = undefined;
+      verification.startedAt = new Date();
+
+      await this.verificationRepository.save(verification);
+      logger.info('[ORCHESTRATOR] Verification state reset', { verificationId });
+
+      // Delete old steps
+      logger.info('[ORCHESTRATOR] Deleting old verification steps', { verificationId });
+      await this.stepRepository.delete({ verificationId });
+      logger.info('[ORCHESTRATOR] Old steps deleted', { verificationId });
+
+      // Run pipeline again
+      logger.info('[ORCHESTRATOR] Starting verification pipeline', {
+        verificationId,
+        certificateId: verification.certificate.id,
+      });
+
+      this.runVerificationPipeline(verificationId, verification.certificate, userId)
+        .catch((error) => {
+          logger.error('[ORCHESTRATOR] Retry verification pipeline failed', {
+            verificationId,
+            error: error.message,
+            errorStack: error.stack,
+            errorName: error.name,
+          });
+        });
+
+      logger.info('[ORCHESTRATOR] Retry verification completed', { verificationId });
+      return verification;
+    } catch (error: any) {
+      logger.error('[ORCHESTRATOR] Retry verification error', {
+        verificationId,
+        error: error.message,
+        errorStack: error.stack,
+        errorName: error.name,
+      });
+      throw error;
+    }
   }
 
   /**

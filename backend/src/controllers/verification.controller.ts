@@ -179,19 +179,39 @@ export const retryVerification = async (
   res: Response,
   next: NextFunction
 ): Promise<void> => {
+  const { id } = req.params;
+  const userId = req.user!.sub;
+
   try {
-    const { id } = req.params;
-    const userId = req.user!.sub;
+    // DEBUG: Log retry request
+    logger.info('[VERIFICATION] Retry request received', {
+      verificationId: id,
+      userId,
+      userEmail: req.user!.email,
+      userRole: req.user!.role,
+    });
 
     const verification = await verificationOrchestrator.retryVerification(id, userId);
 
-    logger.info('Verification retried', {
+    // DEBUG: Log successful retry initiation
+    logger.info('[VERIFICATION] Retry initiated successfully', {
       verificationId: id,
       userId,
+      status: verification.status,
+      certificateId: verification.certificateId,
     });
 
     sendSuccess(res, verification, 'Verification retry started successfully');
   } catch (error) {
+    // DEBUG: Log retry error with full details
+    logger.error('[VERIFICATION] Retry failed', {
+      verificationId: id,
+      userId,
+      error: error instanceof Error ? error.message : 'Unknown error',
+      errorName: error instanceof Error ? error.name : typeof error,
+      errorStack: error instanceof Error ? error.stack : undefined,
+    });
+    
     next(error);
   }
 };
