@@ -16,9 +16,11 @@ RUN if [ -f package-lock.json ]; then \
 # Copy source code
 COPY . .
 
-# Build argument for API URL
+# Build arguments for API URLs
 ARG VITE_API_URL=http://localhost:3000
+ARG VITE_API_BASE_URL=http://localhost:3000/api/v1
 ENV VITE_API_URL=$VITE_API_URL
+ENV VITE_API_BASE_URL=$VITE_API_BASE_URL
 
 # Build application
 RUN npm run build

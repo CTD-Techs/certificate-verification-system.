@@ -754,6 +754,9 @@ const SeedDataSource = new DataSource({
   synchronize: true, // Enable synchronize for seeding
   logging: false,
   entities: [User, Certificate, Verification, VerificationStep, ManualReview, AuditLog, Consent, Notification],
+  ssl: process.env.DB_SSL === 'true' || process.env.DB_HOST?.includes('rds.amazonaws.com') || process.env.NODE_ENV === 'production' ? {
+    rejectUnauthorized: false
+  } : false,
 });
 
 async function seed() {
