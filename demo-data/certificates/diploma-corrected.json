@@ -1,0 +1,47 @@
+{
+  "certificateType": "DIPLOMA",
+  "issuerType": "PROFESSIONAL_BODY",
+  "studentName": "Sneha Reddy",
+  "rollNumber": "DIP2023456",
+  "examYear": "2023",
+  "issueDate": "2023-08-10",
+  "issuerName": "National Institute of Technology",
+  "subjects": [
+    {
+      "name": "Programming Fundamentals",
+      "marks": 85,
+      "maxMarks": 100,
+      "grade": "A"
+    },
+    {
+      "name": "Database Management",
+      "marks": 78,
+      "maxMarks": 100,
+      "grade": "B+"
+    },
+    {
+      "name": "Web Development",
+      "marks": 92,
+      "maxMarks": 100,
+      "grade": "A+"
+    },
+    {
+      "name": "Software Engineering",
+      "marks": 80,
+      "maxMarks": 100,
+      "grade": "A"
+    }
+  ],
+  "metadata": {
+    "dateOfBirth": "1999-11-25",
+    "diploma": "Diploma in Computer Applications",
+    "diplomaShort": "DCA",
+    "institute": "National Institute of Technology",
+    "registrationNumber": "NIT/DCA/2023/456",
+    "duration": "1 Year",
+    "totalMarks": 335,
+    "percentage": 83.75,
+    "result": "PASS",
+    "grade": "A"
+  }
+}

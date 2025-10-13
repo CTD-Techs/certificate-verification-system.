@@ -1,0 +1,30 @@
+{
+  "certificateType": "SCHOOL_CERTIFICATE",
+  "issuerType": "CBSE",
+  "studentName": "Ananya Gupta",
+  "rollNumber": "1012345",
+  "dateOfBirth": "2005-04-12",
+  "examYear": "2023",
+  "grade": "12th",
+  "stream": "Science",
+  "board": "CBSE",
+  "school": "Delhi Public School, Gurgaon",
+  "issueDate": "2023-06-20",
+  "issuerName": "Central Board of Secondary Education",
+  "registrationNumber": "CBSE/2023/12TH/101234",
+  "qrCodeData": "https://digilocker.gov.in/verify/CBSE/2023/12TH/101234",
+  "digitalSignature": "c2lnbmF0dXJlX0NCU0UvMjAyMy8xMlRILzEwMTIzNA==",
+  "metadata": {
+    "subjects": [
+      { "name": "Physics", "marks": 94, "grade": "A1" },
+      { "name": "Chemistry", "marks": 91, "grade": "A1" },
+      { "name": "Mathematics", "marks": 97, "grade": "A1" },
+      { "name": "English", "marks": 89, "grade": "A2" },
+      { "name": "Computer Science", "marks": 96, "grade": "A1" }
+    ],
+    "totalMarks": 467,
+    "percentage": 93.4,
+    "result": "PASS",
+    "division": "FIRST"
+  }
+}

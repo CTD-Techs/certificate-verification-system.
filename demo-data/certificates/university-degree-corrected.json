@@ -1,0 +1,48 @@
+{
+  "certificateType": "DEGREE",
+  "issuerType": "UNIVERSITY",
+  "studentName": "Amit Kumar Singh",
+  "rollNumber": "BCM2020001",
+  "examYear": "2023",
+  "issueDate": "2023-07-15",
+  "issuerName": "University of Delhi",
+  "subjects": [
+    {
+      "name": "Financial Accounting",
+      "marks": 78,
+      "maxMarks": 100,
+      "grade": "A"
+    },
+    {
+      "name": "Business Law",
+      "marks": 82,
+      "maxMarks": 100,
+      "grade": "A"
+    },
+    {
+      "name": "Economics",
+      "marks": 75,
+      "maxMarks": 100,
+      "grade": "B+"
+    },
+    {
+      "name": "Business Management",
+      "marks": 85,
+      "maxMarks": 100,
+      "grade": "A+"
+    }
+  ],
+  "digitalSignature": "c2lnbmF0dXJlX1VuaXZlcnNpdHlfRGVsaGlfQkNvbV8yMDIz",
+  "metadata": {
+    "dateOfBirth": "2001-03-10",
+    "degree": "Bachelor of Commerce",
+    "degreeShort": "B.Com",
+    "university": "University of Delhi",
+    "college": "Shri Ram College of Commerce",
+    "registrationNumber": "DU/BCOM/2020/001",
+    "cgpa": 8.2,
+    "result": "PASS",
+    "division": "FIRST",
+    "honors": true
+  }
+}

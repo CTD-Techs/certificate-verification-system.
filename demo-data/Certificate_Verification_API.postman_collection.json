@@ -1,0 +1,901 @@
+{
+  "info": {
+    "name": "Certificate Verification API",
+    "description": "Complete API collection for Certificate Verification Mock Demo with all 38 endpoints",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "12345678"
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{auth_token}}",
+        "type": "string"
+      }
+    ]
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:3000",
+      "type": "string"
+    },
+    {
+      "key": "auth_token",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "certificate_id",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "verification_id",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "review_id",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "user_id",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Authentication",
+      "item": [
+        {
+          "name": "Register User",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "    const response = pm.response.json();",
+                  "    pm.collectionVariables.set('auth_token', response.data.token);",
+                  "    pm.collectionVariables.set('user_id', response.data.user.id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"newuser@example.com\",\n  \"password\": \"Password123!\",\n  \"firstName\": \"John\",\n  \"lastName\": \"Doe\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/auth/register",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "auth", "register"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    const response = pm.response.json();",
+                  "    pm.collectionVariables.set('auth_token', response.data.token);",
+                  "    pm.collectionVariables.set('user_id', response.data.user.id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"user@certverify.com\",\n  \"password\": \"User123!\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/auth/login",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "auth", "login"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Current User",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/auth/me",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "auth", "me"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Logout",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/auth/logout",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "auth", "logout"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Refresh Token",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/auth/refresh",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "auth", "refresh"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Certificates",
+      "item": [
+        {
+          "name": "Upload Certificate (JSON)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "    const response = pm.response.json();",
+                  "    pm.collectionVariables.set('certificate_id', response.data.id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"certificateType\": \"SCHOOL_CERTIFICATE\",\n  \"issuerType\": \"CBSE\",\n  \"studentName\": \"Test Student\",\n  \"rollNumber\": \"123456\",\n  \"dateOfBirth\": \"2005-01-01\",\n  \"examYear\": \"2023\",\n  \"issueDate\": \"2023-06-20\",\n  \"issuerName\": \"Central Board of Secondary Education\",\n  \"registrationNumber\": \"CBSE/2023/TEST/001\",\n  \"metadata\": {\n    \"grade\": \"10th\",\n    \"board\": \"CBSE\",\n    \"school\": \"Test School\"\n  }\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/certificates/upload-json",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "certificates", "upload-json"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Upload Certificate (File)",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "file",
+                  "type": "file",
+                  "src": []
+                },
+                {
+                  "key": "certificateType",
+                  "value": "SCHOOL_CERTIFICATE",
+                  "type": "text"
+                },
+                {
+                  "key": "issuerName",
+                  "value": "CBSE",
+                  "type": "text"
+                },
+                {
+                  "key": "studentName",
+                  "value": "Test Student",
+                  "type": "text"
+                },
+                {
+                  "key": "rollNumber",
+                  "value": "123456",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/certificates/upload",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "certificates", "upload"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "List Certificates",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/certificates?page=1&limit=10",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "certificates"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                },
+                {
+                  "key": "status",
+                  "value": "VERIFIED",
+                  "disabled": true
+                },
+                {
+                  "key": "certificateType",
+                  "value": "SCHOOL_CERTIFICATE",
+                  "disabled": true
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Certificate by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/certificates/{{certificate_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "certificates", "{{certificate_id}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Certificate",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"metadata\": {\n    \"updated\": true,\n    \"notes\": \"Updated certificate information\"\n  }\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/certificates/{{certificate_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "certificates", "{{certificate_id}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Certificate",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/certificates/{{certificate_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "certificates", "{{certificate_id}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Download Certificate",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/certificates/{{certificate_id}}/download",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "certificates", "{{certificate_id}}", "download"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Certificate Statistics",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/certificates/stats",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "certificates", "stats"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Verifications",
+      "item": [
+        {
+          "name": "Start Verification",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "    const response = pm.response.json();",
+                  "    pm.collectionVariables.set('verification_id', response.data.id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"verificationType\": \"COMBINED\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/verifications/{{certificate_id}}/start",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "verifications", "{{certificate_id}}", "start"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Verification Status",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/verifications/{{verification_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "verifications", "{{verification_id}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "List Verifications",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/verifications?page=1&limit=10",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "verifications"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                },
+                {
+                  "key": "status",
+                  "value": "COMPLETED",
+                  "disabled": true
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Verification Steps",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/verifications/{{verification_id}}/steps",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "verifications", "{{verification_id}}", "steps"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Verification Evidence",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/verifications/{{verification_id}}/evidence",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "verifications", "{{verification_id}}", "evidence"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Retry Verification",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/verifications/{{verification_id}}/retry",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "verifications", "{{verification_id}}", "retry"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Cancel Verification",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/verifications/{{verification_id}}/cancel",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "verifications", "{{verification_id}}", "cancel"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Download Verification Report",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/verifications/{{verification_id}}/report",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "verifications", "{{verification_id}}", "report"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Verifier (Manual Review)",
+      "item": [
+        {
+          "name": "Get Review Queue",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/verifier/queue?status=PENDING&page=1&limit=10",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "verifier", "queue"],
+              "query": [
+                {
+                  "key": "status",
+                  "value": "PENDING"
+                },
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                },
+                {
+                  "key": "priority",
+                  "value": "HIGH",
+                  "disabled": true
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Review Details",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    const response = pm.response.json();",
+                  "    pm.collectionVariables.set('review_id', response.data.id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/verifier/reviews/{{review_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "verifier", "reviews", "{{review_id}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Assign Review to Self",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/verifier/reviews/{{review_id}}/assign",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "verifier", "reviews", "{{review_id}}", "assign"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Submit Review Decision",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"decision\": \"APPROVED\",\n  \"comments\": \"Certificate verified against issuer records. All details match.\",\n  \"internalNotes\": \"Verified via phone call to issuer.\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/verifier/reviews/{{review_id}}/decision",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "verifier", "reviews", "{{review_id}}", "decision"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Escalate Review",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"reason\": \"Complex case requiring senior verifier review\",\n  \"escalatedTo\": \"senior-verifier-id\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/verifier/reviews/{{review_id}}/escalate",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "verifier", "reviews", "{{review_id}}", "escalate"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get My Reviews",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/verifier/my-reviews?page=1&limit=10",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "verifier", "my-reviews"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Review Statistics",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/verifier/stats",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "verifier", "stats"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Admin",
+      "item": [
+        {
+          "name": "Get System Statistics",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/admin/stats",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "admin", "stats"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "List All Users",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/admin/users?page=1&limit=10",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "admin", "users"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                },
+                {
+                  "key": "role",
+                  "value": "VERIFIER",
+                  "disabled": true
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get User by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/admin/users/{{user_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "admin", "users", "{{user_id}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create User",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"newverifier@certverify.com\",\n  \"password\": \"Verifier123!\",\n  \"firstName\": \"New\",\n  \"lastName\": \"Verifier\",\n  \"role\": \"VERIFIER\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/admin/users",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "admin", "users"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update User",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"role\": \"VERIFIER\",\n  \"isActive\": true\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/admin/users/{{user_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "admin", "users", "{{user_id}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete User",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/admin/users/{{user_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "admin", "users", "{{user_id}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get System Health",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/admin/health",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "admin", "health"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Audit Logs",
+      "item": [
+        {
+          "name": "Get Audit Logs",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/audit/logs?page=1&limit=20",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "audit", "logs"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "20"
+                },
+                {
+                  "key": "entityType",
+                  "value": "CERTIFICATE",
+                  "disabled": true
+                },
+                {
+                  "key": "action",
+                  "value": "CERTIFICATE_UPLOADED",
+                  "disabled": true
+                },
+                {
+                  "key": "userId",
+                  "value": "{{user_id}}",
+                  "disabled": true
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Audit Log by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/audit/logs/:logId",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "audit", "logs", ":logId"],
+              "variable": [
+                {
+                  "key": "logId",
+                  "value": ""
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Export Audit Logs",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/audit/logs/export?format=csv",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "audit", "logs", "export"],
+              "query": [
+                {
+                  "key": "format",
+                  "value": "csv"
+                },
+                {
+                  "key": "startDate",
+                  "value": "2024-01-01",
+                  "disabled": true
+                },
+                {
+                  "key": "endDate",
+                  "value": "2024-12-31",
+                  "disabled": true
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Health Check",
+      "request": {
+        "auth": {
+          "type": "noauth"
+        },
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/health",
+          "host": ["{{base_url}}"],
+          "path": ["health"]
+        }
+      },
+      "response": []
+    }
+  ]
+}

@@ -1,0 +1,31 @@
+{
+  "certificateType": "DEGREE",
+  "issuerType": "UNIVERSITY",
+  "studentName": "Neha Desai",
+  "rollNumber": "MU2020002345",
+  "dateOfBirth": "2002-06-22",
+  "graduationYear": "2023",
+  "degree": "Bachelor of Commerce",
+  "major": "Accounting",
+  "university": "Mumbai University",
+  "issueDate": "2023-07-15",
+  "issuerName": "Mumbai University",
+  "registrationNumber": "MU/2023/BCOM/002345",
+  "metadata": {
+    "cgpa": 8.5,
+    "maxCgpa": 10.0,
+    "percentage": 85.0,
+    "division": "FIRST",
+    "honors": true,
+    "duration": "3 years",
+    "modeOfStudy": "Regular",
+    "semesters": [
+      { "semester": 1, "sgpa": 8.2 },
+      { "semester": 2, "sgpa": 8.4 },
+      { "semester": 3, "sgpa": 8.6 },
+      { "semester": 4, "sgpa": 8.5 },
+      { "semester": 5, "sgpa": 8.7 },
+      { "semester": 6, "sgpa": 8.6 }
+    ]
+  }
+}

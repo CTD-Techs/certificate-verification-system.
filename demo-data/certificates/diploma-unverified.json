@@ -1,0 +1,37 @@
+{
+  "certificateType": "DIPLOMA",
+  "issuerType": "PROFESSIONAL_BODY",
+  "studentName": "Pooja Nair",
+  "rollNumber": "POLY2021002345",
+  "dateOfBirth": "2003-08-05",
+  "completionYear": "2023",
+  "diploma": "Diploma in Computer Applications",
+  "institute": "NIIT Polytechnic, Mumbai",
+  "issueDate": "2023-05-30",
+  "issuerName": "NIIT Polytechnic, Mumbai",
+  "registrationNumber": "POLY/2023/DIP/002345",
+  "metadata": {
+    "duration": "2 years",
+    "modeOfStudy": "Regular",
+    "finalGrade": "B+",
+    "percentage": 72.5,
+    "specialization": "Software Development",
+    "semesters": [
+      { "semester": 1, "percentage": 70.0, "grade": "B" },
+      { "semester": 2, "percentage": 72.0, "grade": "B+" },
+      { "semester": 3, "percentage": 74.0, "grade": "B+" },
+      { "semester": 4, "percentage": 74.0, "grade": "B+" }
+    ],
+    "projects": [
+      {
+        "title": "E-Commerce Website",
+        "grade": "A"
+      },
+      {
+        "title": "Mobile App Development",
+        "grade": "B+"
+      }
+    ],
+    "note": "This certificate has potential tampering indicators - missing security features"
+  }
+}

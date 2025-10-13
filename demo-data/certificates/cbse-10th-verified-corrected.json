@@ -1,0 +1,57 @@
+{
+  "certificateType": "SCHOOL_CERTIFICATE",
+  "issuerType": "CBSE",
+  "studentName": "Rahul Sharma",
+  "rollNumber": "1234567",
+  "examYear": "2023",
+  "issueDate": "2023-06-20",
+  "issuerName": "Central Board of Secondary Education",
+  "school": {
+    "name": "Delhi Public School, New Delhi",
+    "code": "DPS001"
+  },
+  "subjects": [
+    {
+      "name": "Mathematics",
+      "marks": 95,
+      "maxMarks": 100,
+      "grade": "A1"
+    },
+    {
+      "name": "Science",
+      "marks": 92,
+      "maxMarks": 100,
+      "grade": "A1"
+    },
+    {
+      "name": "English",
+      "marks": 88,
+      "maxMarks": 100,
+      "grade": "A2"
+    },
+    {
+      "name": "Hindi",
+      "marks": 90,
+      "maxMarks": 100,
+      "grade": "A1"
+    },
+    {
+      "name": "Social Science",
+      "marks": 93,
+      "maxMarks": 100,
+      "grade": "A1"
+    }
+  ],
+  "qrCode": "https://digilocker.gov.in/verify/CBSE/2023/10TH/001234",
+  "digitalSignature": "c2lnbmF0dXJlX0NCU0UvMjAyMy8xMFRILzAwMTIzNA==",
+  "metadata": {
+    "dateOfBirth": "2007-05-15",
+    "grade": "10th",
+    "board": "CBSE",
+    "registrationNumber": "CBSE/2023/10TH/001234",
+    "totalMarks": 458,
+    "percentage": 91.6,
+    "result": "PASS",
+    "division": "FIRST"
+  }
+}

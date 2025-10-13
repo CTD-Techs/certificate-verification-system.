@@ -1,0 +1,30 @@
+{
+  "certificateType": "SCHOOL_CERTIFICATE",
+  "issuerType": "CBSE",
+  "studentName": "Sneha Reddy",
+  "rollNumber": "4567890",
+  "dateOfBirth": "2006-11-18",
+  "examYear": "2022",
+  "grade": "10th",
+  "board": "CBSE",
+  "school": "Ryan International School, Hyderabad",
+  "issueDate": "2022-06-20",
+  "issuerName": "Central Board of Secondary Education",
+  "registrationNumber": "CBSE/2022/10TH/004567",
+  "qrCodeData": "https://digilocker.gov.in/verify/CBSE/2022/10TH/004567",
+  "digitalSignature": "c2lnbmF0dXJlX0NCU0UvMjAyMi8xMFRILzAwNDU2Nw==",
+  "metadata": {
+    "subjects": [
+      { "name": "Mathematics", "marks": 78, "grade": "B1" },
+      { "name": "Science", "marks": 82, "grade": "A2" },
+      { "name": "English", "marks": 75, "grade": "B1" },
+      { "name": "Hindi", "marks": 80, "grade": "A2" },
+      { "name": "Social Science", "marks": 79, "grade": "B1" }
+    ],
+    "totalMarks": 394,
+    "percentage": 78.8,
+    "result": "PASS",
+    "division": "FIRST",
+    "note": "Requires manual review - QR code validation returned inconclusive results. Digital signature present but verification confidence below threshold."
+  }
+}

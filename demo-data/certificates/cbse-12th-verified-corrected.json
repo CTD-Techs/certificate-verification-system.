@@ -1,0 +1,58 @@
+{
+  "certificateType": "SCHOOL_CERTIFICATE",
+  "issuerType": "CBSE",
+  "studentName": "Priya Patel",
+  "rollNumber": "7654321",
+  "examYear": "2023",
+  "issueDate": "2023-06-25",
+  "issuerName": "Central Board of Secondary Education",
+  "school": {
+    "name": "Kendriya Vidyalaya, Mumbai",
+    "code": "KV002"
+  },
+  "subjects": [
+    {
+      "name": "Physics",
+      "marks": 94,
+      "maxMarks": 100,
+      "grade": "A1"
+    },
+    {
+      "name": "Chemistry",
+      "marks": 91,
+      "maxMarks": 100,
+      "grade": "A1"
+    },
+    {
+      "name": "Mathematics",
+      "marks": 98,
+      "maxMarks": 100,
+      "grade": "A1"
+    },
+    {
+      "name": "English",
+      "marks": 87,
+      "maxMarks": 100,
+      "grade": "A2"
+    },
+    {
+      "name": "Computer Science",
+      "marks": 96,
+      "maxMarks": 100,
+      "grade": "A1"
+    }
+  ],
+  "qrCode": "https://digilocker.gov.in/verify/CBSE/2023/12TH/007654",
+  "digitalSignature": "c2lnbmF0dXJlX0NCU0UvMjAyMy8xMlRILzAwNzY1NA==",
+  "metadata": {
+    "dateOfBirth": "2005-08-22",
+    "grade": "12th",
+    "stream": "Science",
+    "board": "CBSE",
+    "registrationNumber": "CBSE/2023/12TH/007654",
+    "totalMarks": 466,
+    "percentage": 93.2,
+    "result": "PASS",
+    "division": "FIRST"
+  }
+}

@@ -1,0 +1,13 @@
+export { LoginPage } from './LoginPage';
+export { RegisterPage } from './RegisterPage';
+export { DashboardPage } from './DashboardPage';
+export { CertificatesPage } from './CertificatesPage';
+export { UploadCertificatePage } from './UploadCertificatePage';
+export { VerificationsPage } from './VerificationsPage';
+export { VerificationDetailPage } from './VerificationDetailPage';
+export { VerifierQueuePage } from './VerifierQueuePage';
+export { VerifierReviewPage } from './VerifierReviewPage';
+export { AdminUsersPage } from './AdminUsersPage';
+export { AdminStatsPage } from './AdminStatsPage';
+export { ProfilePage } from './ProfilePage';
+export { NotFoundPage } from './NotFoundPage';
