@@ -17,6 +17,9 @@ export const AppDataSource = new DataSource({
   migrations: [path.join(__dirname, '../database/migrations/**/*.{ts,js}')],
   subscribers: [],
   maxQueryExecutionTime: 1000, // Log queries taking more than 1s
+  ssl: process.env.NODE_ENV === 'production' ? {
+    rejectUnauthorized: false
+  } : false,
   extra: {
     max: 20, // Maximum pool size
     min: 5,  // Minimum pool size

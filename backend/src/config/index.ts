@@ -15,6 +15,9 @@ export const config = {
     name: process.env.DB_NAME || 'cert_verification',
     user: process.env.DB_USER || 'postgres',
     password: process.env.DB_PASSWORD || 'postgres',
+    ssl: process.env.NODE_ENV === 'production' ? {
+      rejectUnauthorized: false
+    } : false,
   },
 
   // Redis
