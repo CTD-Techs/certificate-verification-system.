@@ -37,11 +37,11 @@ router.get('/', validate(listVerificationsSchema), verificationController.listVe
 router.get('/stats', verificationController.getVerificationStats);
 
 /**
- * @route   GET /api/v1/verifications/:id
- * @desc    Get verification by ID
+ * @route   POST /api/v1/verifications/:id/retry
+ * @desc    Retry failed verification
  * @access  Private
  */
-router.get('/:id', validate(getVerificationSchema), verificationController.getVerification);
+router.post('/:id/retry', validate(retryVerificationSchema), verificationController.retryVerification);
 
 /**
  * @route   GET /api/v1/verifications/:id/steps
@@ -51,10 +51,10 @@ router.get('/:id', validate(getVerificationSchema), verificationController.getVe
 router.get('/:id/steps', validate(getVerificationStepsSchema), verificationController.getVerificationSteps);
 
 /**
- * @route   POST /api/v1/verifications/:id/retry
- * @desc    Retry failed verification
+ * @route   GET /api/v1/verifications/:id
+ * @desc    Get verification by ID
  * @access  Private
  */
-router.post('/:id/retry', validate(retryVerificationSchema), verificationController.retryVerification);
+router.get('/:id', validate(getVerificationSchema), verificationController.getVerification);
 
 export default router;
