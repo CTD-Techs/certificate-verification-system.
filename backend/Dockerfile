@@ -7,11 +7,11 @@ WORKDIR /app
 COPY package*.json ./
 COPY tsconfig.json ./
 
-# Install dependencies
+# Install ALL dependencies (including devDependencies for TypeScript build)
 RUN if [ -f package-lock.json ]; then \
-      npm ci --only=production && npm cache clean --force; \
+      npm ci && npm cache clean --force; \
     else \
-      npm install --only=production && npm cache clean --force; \
+      npm install && npm cache clean --force; \
     fi
 
 # Copy source code
