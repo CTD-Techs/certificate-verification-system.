@@ -38,6 +38,28 @@ export const errorHandler = (
     return sendError(res, 'VALIDATION_ERROR', err.message, 400);
   }
 
+  // Handle Zod validation errors
+  if (err.name === 'ZodError') {
+    const zodError = err as any;
+    logger.error('[VALIDATION] Zod validation failed:', {
+      issues: zodError.issues,
+      errors: zodError.errors,
+      formattedErrors: zodError.format(),
+    });
+    
+    const errorMessages = zodError.issues?.map((issue: any) =>
+      `${issue.path.join('.')}: ${issue.message}`
+    ).join(', ') || err.message;
+    
+    return sendError(
+      res,
+      'VALIDATION_ERROR',
+      errorMessages,
+      400,
+      zodError.issues || []
+    );
+  }
+
   // Handle JWT errors
   if (err.name === 'JsonWebTokenError') {
     return sendError(res, 'UNAUTHORIZED', 'Invalid token', 401);

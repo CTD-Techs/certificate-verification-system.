@@ -33,8 +33,8 @@ export const CertificatesPage: React.FC = () => {
       <div className="space-y-6">
         <div className="flex justify-between items-center">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">Certificates</h1>
-            <p className="mt-1 text-sm text-gray-500">
+            <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Certificates</h1>
+            <p className="mt-1 text-sm text-gray-600 dark:text-gray-300">
               Manage and view all your uploaded certificates
             </p>
           </div>

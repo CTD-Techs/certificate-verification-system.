@@ -35,6 +35,27 @@ export interface VerificationEvidence {
     data?: any;
     timestamp: string;
   };
+  aadhaar?: {
+    status: string;
+    verified: boolean;
+    aadhaarNumber?: string;
+    demographicMatch?: any;
+    verificationId?: string;
+    timestamp: string;
+    error?: any;
+  };
+  pan?: {
+    status: string;
+    verified: boolean;
+    panNumber?: string;
+    holder?: any;
+    aadhaarLinked?: boolean;
+    nameMatch?: boolean;
+    dobMatch?: boolean;
+    verificationId?: string;
+    timestamp: string;
+    error?: any;
+  };
   metadata: {
     collectedAt: string;
     totalChecks: number;
@@ -56,6 +77,12 @@ class EvidenceCollectorService {
     forensicResult?: ForensicAnalysisResult;
     qrCodeValid?: boolean;
     qrCodeData?: any;
+    aadhaarResponse?: any;
+    panResponse?: any;
+    aadhaarVerified?: boolean;
+    panVerified?: boolean;
+    identityResponse?: any;
+    identityVerified?: boolean;
   }): VerificationEvidence {
     let passedChecks = 0;
     let totalChecks = 0;
@@ -131,6 +158,77 @@ class EvidenceCollectorService {
       };
     }
 
+    // Aadhaar verification evidence
+    if (data.aadhaarResponse) {
+      totalChecks++;
+      const verified = data.aadhaarResponse.status === 'SUCCESS' &&
+                      data.aadhaarResponse.verified === true;
+      if (verified) passedChecks++;
+
+      evidence.aadhaar = {
+        status: data.aadhaarResponse.status,
+        verified,
+        aadhaarNumber: data.aadhaarResponse.aadhaarNumber,
+        demographicMatch: data.aadhaarResponse.demographicMatch,
+        verificationId: data.aadhaarResponse.verificationId,
+        timestamp: data.aadhaarResponse.timestamp,
+        error: data.aadhaarResponse.error,
+      };
+    }
+
+    // PAN verification evidence
+    if (data.panResponse) {
+      totalChecks++;
+      const verified = data.panResponse.status === 'SUCCESS' &&
+                      data.panResponse.verified === true;
+      if (verified) passedChecks++;
+
+      evidence.pan = {
+        status: data.panResponse.status,
+        verified,
+        panNumber: data.panResponse.panNumber,
+        holder: data.panResponse.holder,
+        aadhaarLinked: data.panResponse.aadhaarLinked,
+        nameMatch: data.panResponse.nameMatch,
+        dobMatch: data.panResponse.dobMatch,
+        verificationId: data.panResponse.verificationId,
+        timestamp: data.panResponse.timestamp,
+        error: data.panResponse.error,
+      };
+    }
+
+    // Identity verification evidence (for identity documents)
+    if (data.identityResponse) {
+      totalChecks++;
+      if (data.identityVerified) passedChecks++;
+
+      // Determine if it's Aadhaar or PAN based on response structure
+      if (data.identityResponse.aadhaarNumber) {
+        evidence.aadhaar = {
+          status: data.identityResponse.status,
+          verified: data.identityVerified || false,
+          aadhaarNumber: data.identityResponse.aadhaarNumber,
+          demographicMatch: data.identityResponse.demographicMatch,
+          verificationId: data.identityResponse.verificationId,
+          timestamp: data.identityResponse.timestamp,
+          error: data.identityResponse.error,
+        };
+      } else if (data.identityResponse.panNumber) {
+        evidence.pan = {
+          status: data.identityResponse.status,
+          verified: data.identityVerified || false,
+          panNumber: data.identityResponse.panNumber,
+          holder: data.identityResponse.holder,
+          aadhaarLinked: data.identityResponse.aadhaarLinked,
+          nameMatch: data.identityResponse.nameMatch,
+          dobMatch: data.identityResponse.dobMatch,
+          verificationId: data.identityResponse.verificationId,
+          timestamp: data.identityResponse.timestamp,
+          error: data.identityResponse.error,
+        };
+      }
+    }
+
     // Update metadata
     evidence.metadata.totalChecks = totalChecks;
     evidence.metadata.passedChecks = passedChecks;
@@ -194,6 +292,51 @@ class EvidenceCollectorService {
       sections.push('');
     }
 
+    if (evidence.aadhaar) {
+      sections.push('Aadhaar Verification:');
+      sections.push(`  Status: ${evidence.aadhaar.status}`);
+      sections.push(`  Verified: ${evidence.aadhaar.verified ? 'Yes' : 'No'}`);
+      if (evidence.aadhaar.aadhaarNumber) {
+        sections.push(`  Aadhaar: ${evidence.aadhaar.aadhaarNumber}`);
+      }
+      if (evidence.aadhaar.demographicMatch) {
+        sections.push(`  Demographic Match Score: ${evidence.aadhaar.demographicMatch.overallScore}%`);
+      }
+      if (evidence.aadhaar.verificationId) {
+        sections.push(`  Verification ID: ${evidence.aadhaar.verificationId}`);
+      }
+      if (evidence.aadhaar.error) {
+        sections.push(`  Error: ${evidence.aadhaar.error.message}`);
+      }
+      sections.push('');
+    }
+
+    if (evidence.pan) {
+      sections.push('PAN Verification:');
+      sections.push(`  Status: ${evidence.pan.status}`);
+      sections.push(`  Verified: ${evidence.pan.verified ? 'Yes' : 'No'}`);
+      if (evidence.pan.panNumber) {
+        sections.push(`  PAN: ${evidence.pan.panNumber}`);
+      }
+      if (evidence.pan.holder) {
+        sections.push(`  Holder: ${evidence.pan.holder.name}`);
+        sections.push(`  Status: ${evidence.pan.holder.status}`);
+      }
+      if (evidence.pan.aadhaarLinked !== undefined) {
+        sections.push(`  Aadhaar Linked: ${evidence.pan.aadhaarLinked ? 'Yes' : 'No'}`);
+      }
+      if (evidence.pan.nameMatch !== undefined) {
+        sections.push(`  Name Match: ${evidence.pan.nameMatch ? 'Yes' : 'No'}`);
+      }
+      if (evidence.pan.verificationId) {
+        sections.push(`  Verification ID: ${evidence.pan.verificationId}`);
+      }
+      if (evidence.pan.error) {
+        sections.push(`  Error: ${evidence.pan.error.message}`);
+      }
+      sections.push('');
+    }
+
     sections.push('Summary:');
     sections.push(`  Total Checks: ${evidence.metadata.totalChecks}`);
     sections.push(`  Passed: ${evidence.metadata.passedChecks}`);
@@ -228,6 +371,20 @@ class EvidenceCollectorService {
 
     if (evidence.qrCode?.valid) {
       findings.push('QR code validated successfully');
+    }
+
+    if (evidence.aadhaar?.verified) {
+      findings.push('Aadhaar verification successful');
+      if (evidence.aadhaar.demographicMatch) {
+        findings.push(`Demographic match: ${evidence.aadhaar.demographicMatch.overallScore}%`);
+      }
+    }
+
+    if (evidence.pan?.verified) {
+      findings.push('PAN verification successful');
+      if (evidence.pan.aadhaarLinked) {
+        findings.push('PAN is linked to Aadhaar');
+      }
     }
 
     return findings;

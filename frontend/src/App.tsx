@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
 import { useAuthStore } from './stores';
+import { ThemeProvider } from './contexts/ThemeContext';
 import { PrivateRoute } from './routes/PrivateRoute';
 import { LoginPage } from './pages/LoginPage';
 import { RegisterPage } from './pages/RegisterPage';
@@ -10,6 +11,8 @@ import { CertificatesPage } from './pages/CertificatesPage';
 import { UploadCertificatePage } from './pages/UploadCertificatePage';
 import { VerificationsPage } from './pages/VerificationsPage';
 import { VerificationDetailPage } from './pages/VerificationDetailPage';
+import { SignatureMatchingPage } from './pages/SignatureMatchingPage';
+import { PANAadhaarMatchingPage } from './pages/PANAadhaarMatchingPage';
 import { VerifierQueuePage } from './pages/VerifierQueuePage';
 import { VerifierReviewPage } from './pages/VerifierReviewPage';
 import { AdminUsersPage } from './pages/AdminUsersPage';
@@ -25,9 +28,10 @@ function App() {
   }, [loadUser]);
 
   return (
-    <BrowserRouter>
-      <Toaster position="top-right" />
-      <Routes>
+    <ThemeProvider>
+      <BrowserRouter>
+        <Toaster position="top-right" />
+        <Routes>
         {/* Public Routes */}
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
@@ -84,6 +88,22 @@ function App() {
             </PrivateRoute>
           }
         />
+        <Route
+          path="/signature-matching"
+          element={
+            <PrivateRoute>
+              <SignatureMatchingPage />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/pan-aadhaar-matching"
+          element={
+            <PrivateRoute>
+              <PANAadhaarMatchingPage />
+            </PrivateRoute>
+          }
+        />
 
         {/* Protected Routes - Verifier Only */}
         <Route
@@ -123,8 +143,9 @@ function App() {
 
         {/* 404 Not Found */}
         <Route path="*" element={<NotFoundPage />} />
-      </Routes>
-    </BrowserRouter>
+        </Routes>
+      </BrowserRouter>
+    </ThemeProvider>
   );
 }
 

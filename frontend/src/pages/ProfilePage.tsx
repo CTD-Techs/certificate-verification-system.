@@ -125,8 +125,8 @@ export const ProfilePage: React.FC = () => {
     <Layout>
       <div className="max-w-4xl mx-auto space-y-6">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Profile</h1>
-          <p className="mt-1 text-sm text-gray-500">
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Profile</h1>
+          <p className="mt-1 text-sm text-gray-600 dark:text-gray-300">
             Manage your account settings and preferences
           </p>
         </div>
@@ -134,7 +134,7 @@ export const ProfilePage: React.FC = () => {
         {/* User Information */}
         <Card>
           <div className="flex items-center justify-between mb-6">
-            <h3 className="text-lg font-semibold text-gray-900">User Information</h3>
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-white">User Information</h3>
             {!isEditingProfile && (
               <Button variant="secondary" onClick={() => setIsEditingProfile(true)}>
                 Edit Profile
@@ -186,20 +186,20 @@ export const ProfilePage: React.FC = () => {
             <div className="space-y-4">
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <p className="text-sm text-gray-500">First Name</p>
-                  <p className="mt-1 font-medium text-gray-900">{user.firstName}</p>
+                  <p className="text-sm text-gray-600 dark:text-gray-300">First Name</p>
+                  <p className="mt-1 font-medium text-gray-900 dark:text-white">{user.firstName}</p>
                 </div>
                 <div>
-                  <p className="text-sm text-gray-500">Last Name</p>
-                  <p className="mt-1 font-medium text-gray-900">{user.lastName}</p>
+                  <p className="text-sm text-gray-600 dark:text-gray-300">Last Name</p>
+                  <p className="mt-1 font-medium text-gray-900 dark:text-white">{user.lastName}</p>
                 </div>
               </div>
               <div>
-                <p className="text-sm text-gray-500">Email</p>
-                <p className="mt-1 font-medium text-gray-900">{user.email}</p>
+                <p className="text-sm text-gray-600 dark:text-gray-300">Email</p>
+                <p className="mt-1 font-medium text-gray-900 dark:text-white">{user.email}</p>
               </div>
               <div>
-                <p className="text-sm text-gray-500">Role</p>
+                <p className="text-sm text-gray-600 dark:text-gray-300">Role</p>
                 <div className="mt-1">
                   <Badge variant="primary">{user.role}</Badge>
                 </div>
@@ -211,7 +211,7 @@ export const ProfilePage: React.FC = () => {
         {/* Change Password */}
         <Card>
           <div className="flex items-center justify-between mb-6">
-            <h3 className="text-lg font-semibold text-gray-900">Change Password</h3>
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Change Password</h3>
             {!isChangingPassword && (
               <Button variant="secondary" onClick={() => setIsChangingPassword(true)}>
                 Change Password
@@ -267,7 +267,7 @@ export const ProfilePage: React.FC = () => {
               </div>
             </form>
           ) : (
-            <p className="text-gray-600">
+            <p className="text-gray-700 dark:text-gray-200">
               Keep your account secure by using a strong password and changing it regularly.
             </p>
           )}
@@ -275,11 +275,11 @@ export const ProfilePage: React.FC = () => {
 
         {/* Danger Zone */}
         <Card>
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">Danger Zone</h3>
-          <div className="flex items-center justify-between p-4 border border-red-200 rounded-lg bg-red-50">
+          <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Danger Zone</h3>
+          <div className="flex items-center justify-between p-4 border border-red-200 dark:border-red-800 rounded-lg bg-red-50 dark:bg-red-900/20">
             <div>
-              <p className="font-medium text-gray-900">Logout</p>
-              <p className="text-sm text-gray-600">Sign out of your account</p>
+              <p className="font-medium text-gray-900 dark:text-white">Logout</p>
+              <p className="text-sm text-gray-700 dark:text-gray-200">Sign out of your account</p>
             </div>
             <Button variant="secondary" onClick={handleLogout}>
               Logout

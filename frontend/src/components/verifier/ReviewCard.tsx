@@ -30,18 +30,16 @@ export const ReviewCard: React.FC<ReviewCardProps> = ({ review, onClick }) => {
   };
 
   return (
-    <Card
-      className={`${onClick ? 'cursor-pointer hover:shadow-lg transition-shadow' : ''}`}
-      onClick={onClick}
-    >
-      <div className="space-y-3">
+    <div onClick={onClick} className={onClick ? 'cursor-pointer' : ''}>
+      <Card>
+        <div className="space-y-3">
         {/* Header */}
         <div className="flex items-start justify-between">
           <div>
-            <h3 className="text-lg font-semibold text-gray-900">
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
               Review #{review.id.substring(0, 8)}
             </h3>
-            <p className="text-sm text-gray-500">
+            <p className="text-sm text-gray-600 dark:text-gray-400">
               Verification: {review.verificationId.substring(0, 8)}...
             </p>
           </div>
@@ -59,27 +57,27 @@ export const ReviewCard: React.FC<ReviewCardProps> = ({ review, onClick }) => {
 
         {/* Reason */}
         {review.reason && (
-          <div className="bg-gray-50 rounded-md p-3">
-            <p className="text-xs font-medium text-gray-700 mb-1">Reason:</p>
-            <p className="text-sm text-gray-600">{review.reason}</p>
+          <div className="bg-gray-50 dark:bg-gray-800 rounded-md p-3">
+            <p className="text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">Reason:</p>
+            <p className="text-sm text-gray-600 dark:text-gray-400">{review.reason}</p>
           </div>
         )}
 
         {/* Comments */}
         {review.comments && (
-          <div className="border-t border-gray-200 pt-3">
-            <p className="text-xs font-medium text-gray-700 mb-1">Reviewer Comments:</p>
-            <p className="text-sm text-gray-600">{review.comments}</p>
+          <div className="border-t border-gray-200 dark:border-gray-700 pt-3">
+            <p className="text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">Reviewer Comments:</p>
+            <p className="text-sm text-gray-600 dark:text-gray-400">{review.comments}</p>
           </div>
         )}
 
         {/* Assignment & Status */}
-        <div className="flex items-center justify-between text-xs text-gray-500 border-t border-gray-200 pt-3">
+        <div className="flex items-center justify-between text-xs text-gray-600 dark:text-gray-400 border-t border-gray-200 dark:border-gray-700 pt-3">
           <div>
             {review.assignedTo ? (
-              <span>Assigned to: User #{review.assignedTo}</span>
+              <span>Assigned to: <span className="font-medium text-gray-900 dark:text-white">User #{review.assignedTo}</span></span>
             ) : (
-              <span className="text-yellow-600 font-medium">Unassigned</span>
+              <span className="text-yellow-600 dark:text-yellow-500 font-medium">Unassigned</span>
             )}
           </div>
           <div className="text-right">
@@ -89,7 +87,8 @@ export const ReviewCard: React.FC<ReviewCardProps> = ({ review, onClick }) => {
             )}
           </div>
         </div>
-      </div>
-    </Card>
+        </div>
+      </Card>
+    </div>
   );
 };

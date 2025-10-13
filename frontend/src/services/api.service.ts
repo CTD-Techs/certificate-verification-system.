@@ -10,9 +10,10 @@ class ApiService {
     this.api = axios.create({
       baseURL: API_BASE_URL,
       timeout: 30000,
-      headers: {
-        'Content-Type': 'application/json',
-      },
+      // DO NOT set default Content-Type here
+      // It will be set automatically based on request data type
+      // FormData needs multipart/form-data with boundary
+      // JSON needs application/json
     });
 
     this.setupInterceptors();
@@ -22,23 +23,54 @@ class ApiService {
     // Request interceptor
     this.api.interceptors.request.use(
       (config: InternalAxiosRequestConfig) => {
+        console.log('[API] Request interceptor:', {
+          url: config.url,
+          method: config.method,
+          hasFormData: config.data instanceof FormData,
+          contentType: config.headers?.['Content-Type']
+        });
+
         const token = localStorage.getItem('token');
         if (token && config.headers) {
           config.headers.Authorization = `Bearer ${token}`;
         }
+
+        // Set Content-Type for JSON requests only
+        // FormData will set its own Content-Type with boundary
+        if (config.data && !(config.data instanceof FormData) && config.headers) {
+          config.headers['Content-Type'] = 'application/json';
+        }
+
+        console.log('[API] Request headers after interceptor:', config.headers);
         return config;
       },
       (error: AxiosError) => {
+        console.error('[API] Request interceptor error:', error);
         return Promise.reject(error);
       }
     );
 
     // Response interceptor
     this.api.interceptors.response.use(
-      (response) => response,
+      (response) => {
+        console.log('[API] Response received:', {
+          url: response.config.url,
+          status: response.status,
+          data: response.data
+        });
+        return response;
+      },
       (error: AxiosError) => {
+        console.error('[API] Response error:', {
+          url: error.config?.url,
+          status: error.response?.status,
+          message: error.message,
+          data: error.response?.data
+        });
+
         if (error.response?.status === 401) {
           // Unauthorized - clear token and redirect to login
+          console.error('[API] 401 Unauthorized - clearing session');
           localStorage.removeItem('token');
           localStorage.removeItem('user');
           window.location.href = '/login';

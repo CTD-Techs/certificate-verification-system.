@@ -40,6 +40,23 @@ export const config = {
     path: process.env.STORAGE_PATH || './storage',
   },
 
+  // AWS Configuration
+  aws: {
+    region: process.env.AWS_REGION || 'ap-south-1',
+    accessKeyId: process.env.AWS_ACCESS_KEY_ID || '',
+    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY || '',
+    s3Bucket: process.env.AWS_S3_BUCKET || 'certificate-verification-documents',
+    textract: {
+      enabled: process.env.AWS_TEXTRACT_ENABLED === 'true',
+      mockMode: process.env.AWS_TEXTRACT_MOCK_MODE === 'true',
+    },
+    bedrock: {
+      enabled: process.env.AWS_BEDROCK_ENABLED === 'true',
+      modelId: process.env.AWS_BEDROCK_MODEL_ID || 'anthropic.claude-3-5-sonnet-20241022-v2:0',
+      mockMode: process.env.AWS_BEDROCK_MOCK_MODE === 'true',
+    },
+  },
+
   // Rate Limiting
   rateLimit: {
     windowMs: parseInt(process.env.RATE_LIMIT_WINDOW_MS || '60000'),

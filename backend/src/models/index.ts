@@ -6,3 +6,4 @@ export { ManualReview, ReviewStatus, ReviewPriority, ReviewDecision } from './Ma
 export { AuditLog, EntityType } from './AuditLog';
 export { Consent, ConsentPurpose } from './Consent';
 export { Notification, NotificationType, NotificationChannel, NotificationStatus } from './Notification';
+export { DocumentProcessing } from './DocumentProcessing';

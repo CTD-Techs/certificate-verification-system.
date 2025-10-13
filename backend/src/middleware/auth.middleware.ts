@@ -21,17 +21,24 @@ export const authenticate = async (
   next: NextFunction
 ): Promise<void> => {
   try {
+    console.log('[AUTH] Request path:', req.path);
+    console.log('[AUTH] Content-Type:', req.headers['content-type']);
+    console.log('[AUTH] Authorization header present:', !!req.headers.authorization);
+    
     const token = extractTokenFromHeader(req.headers.authorization);
 
     if (!token) {
+      console.log('[AUTH] No token found in Authorization header');
       throw new UnauthorizedError('No authentication token provided');
     }
 
     const payload = verifyToken(token);
     req.user = payload;
-
+    
+    console.log('[AUTH] User authenticated:', { userId: payload.sub, role: payload.role });
     next();
   } catch (error) {
+    console.error('[AUTH] Authentication failed:', error);
     next(new UnauthorizedError('Invalid or expired token'));
   }
 };

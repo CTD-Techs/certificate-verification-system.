@@ -18,6 +18,8 @@ export enum CertificateType {
   DEGREE = 'DEGREE',
   DIPLOMA = 'DIPLOMA',
   MARKSHEET = 'MARKSHEET',
+  AADHAAR_CARD = 'AADHAAR_CARD',
+  PAN_CARD = 'PAN_CARD',
   OTHER = 'OTHER',
 }
 
@@ -26,6 +28,8 @@ export enum IssuerType {
   STATE_BOARD = 'STATE_BOARD',
   UNIVERSITY = 'UNIVERSITY',
   PROFESSIONAL_BODY = 'PROFESSIONAL_BODY',
+  UIDAI = 'UIDAI',
+  INCOME_TAX = 'INCOME_TAX',
   OTHER = 'OTHER',
 }
 
@@ -75,6 +79,18 @@ export class Certificate {
 
   @Column({ name: 'student_id_hash', length: 64, nullable: true })
   studentIdHash?: string;
+
+  @Column({ name: 'aadhaar_number_hash', length: 64, nullable: true })
+  aadhaarNumberHash?: string;
+
+  @Column({ name: 'pan_number_hash', length: 64, nullable: true })
+  panNumberHash?: string;
+
+  @Column({ name: 'identity_verified', default: false })
+  identityVerified: boolean;
+
+  @Column({ name: 'identity_verified_at', type: 'timestamp with time zone', nullable: true })
+  identityVerifiedAt?: Date;
 
   @Column({ name: 'certificate_data', type: 'jsonb' })
   certificateData: Record<string, any>;

@@ -11,6 +11,8 @@ export const ROUTES = {
   UPLOAD_CERTIFICATE: '/certificates/upload',
   VERIFICATIONS: '/verifications',
   VERIFICATION_DETAIL: '/verifications/:id',
+  SIGNATURE_MATCHING: '/signature-matching',
+  PAN_AADHAAR_MATCHING: '/pan-aadhaar-matching',
   VERIFIER_QUEUE: '/verifier/queue',
   VERIFIER_REVIEW: '/verifier/review/:id',
   ADMIN_USERS: '/admin/users',
@@ -23,6 +25,8 @@ export const CERTIFICATE_TYPES = [
   { value: 'DEGREE', label: 'Degree' },
   { value: 'DIPLOMA', label: 'Diploma' },
   { value: 'MARKSHEET', label: 'Marksheet' },
+  { value: 'AADHAAR_CARD', label: 'Aadhaar Card' },
+  { value: 'PAN_CARD', label: 'PAN Card' },
   { value: 'OTHER', label: 'Other' },
 ];
 
@@ -31,6 +35,8 @@ export const ISSUER_TYPES = [
   { value: 'ICSE', label: 'ICSE' },
   { value: 'STATE_BOARD', label: 'State Board' },
   { value: 'UNIVERSITY', label: 'University' },
+  { value: 'UIDAI', label: 'UIDAI' },
+  { value: 'INCOME_TAX', label: 'Income Tax Department' },
   { value: 'OTHER', label: 'Other' },
 ];
 

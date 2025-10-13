@@ -57,7 +57,7 @@ export const FileUpload: React.FC<FileUploadProps> = ({
   return (
     <div className={className}>
       {label && (
-        <label className="block text-sm font-medium text-gray-700 mb-1">
+        <label className="block text-sm font-medium text-white mb-1">
           {label}
           {required && <span className="text-red-500 ml-1">*</span>}
         </label>

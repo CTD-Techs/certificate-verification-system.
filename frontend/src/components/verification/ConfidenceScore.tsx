@@ -1,7 +1,7 @@
 import React from 'react';
 
 interface ConfidenceScoreProps {
-  score: number; // 0 to 1
+  score: number; // 0 to 100 (percentage)
   size?: 'sm' | 'md' | 'lg';
   showLabel?: boolean;
 }
@@ -11,17 +11,19 @@ export const ConfidenceScore: React.FC<ConfidenceScoreProps> = ({
   size = 'md',
   showLabel = true,
 }) => {
-  const percentage = Math.round(score * 100);
+  // Handle both 0-1 and 0-100 ranges
+  const normalizedScore = score > 1 ? score : score * 100;
+  const percentage = Math.round(normalizedScore);
   
   const getColor = () => {
-    if (score >= 0.8) return 'text-green-600';
-    if (score >= 0.6) return 'text-yellow-600';
+    if (percentage >= 80) return 'text-green-600';
+    if (percentage >= 60) return 'text-yellow-600';
     return 'text-red-600';
   };
 
   const getBarColor = () => {
-    if (score >= 0.8) return 'bg-green-600';
-    if (score >= 0.6) return 'bg-yellow-600';
+    if (percentage >= 80) return 'bg-green-600';
+    if (percentage >= 60) return 'bg-yellow-600';
     return 'bg-red-600';
   };
 

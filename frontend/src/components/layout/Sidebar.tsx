@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
+import clsx from 'clsx';
 import { useAuthStore } from '@/stores';
 import { ROUTES } from '@/utils';
 import {
@@ -10,6 +11,9 @@ import {
   UsersIcon,
   ChartBarIcon,
   UserCircleIcon,
+  DocumentDuplicateIcon,
+  FingerPrintIcon,
+  ShieldCheckIcon,
 } from '@heroicons/react/24/outline';
 
 interface NavItem {
@@ -23,6 +27,8 @@ const navItems: NavItem[] = [
   { name: 'Dashboard', path: ROUTES.DASHBOARD, icon: HomeIcon },
   { name: 'Certificates', path: ROUTES.CERTIFICATES, icon: DocumentTextIcon },
   { name: 'Verifications', path: ROUTES.VERIFICATIONS, icon: CheckCircleIcon },
+  { name: 'Signature Matching', path: ROUTES.SIGNATURE_MATCHING, icon: FingerPrintIcon },
+  { name: 'PAN-Aadhaar Matching', path: ROUTES.PAN_AADHAAR_MATCHING, icon: DocumentDuplicateIcon },
   {
     name: 'Review Queue',
     path: ROUTES.VERIFIER_QUEUE,
@@ -43,11 +49,21 @@ export const Sidebar: React.FC = () => {
   );
 
   return (
-    <div className="flex flex-col w-64 bg-white border-r border-gray-200 h-screen">
-      <div className="flex items-center justify-center h-16 border-b border-gray-200">
-        <h1 className="text-xl font-bold text-primary-600">Cert Verify</h1>
+    <div className="flex flex-col w-64 bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 h-screen transition-colors">
+      {/* Logo Section */}
+      <div className="flex items-center justify-center h-16 border-b border-gray-200 dark:border-gray-700 px-6">
+        <div className="flex items-center space-x-3">
+          <div className="w-10 h-10 rounded-lg bg-blue-600 flex items-center justify-center shadow-md">
+            <ShieldCheckIcon className="h-6 w-6 text-white" />
+          </div>
+          <div className="flex flex-col">
+            <h1 className="text-lg font-bold text-gray-900 dark:text-white">VeriDoc</h1>
+            <p className="text-[10px] text-gray-500 dark:text-gray-400">VionixCosmic</p>
+          </div>
+        </div>
       </div>
 
+      {/* Navigation */}
       <nav className="flex-1 overflow-y-auto p-4 space-y-1">
         {filteredNavItems.map((item) => {
           const Icon = item.icon;
@@ -57,33 +73,39 @@ export const Sidebar: React.FC = () => {
             <Link
               key={item.path}
               to={item.path}
-              className={`flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-colors ${
+              className={clsx(
+                'flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-colors',
                 isActive
-                  ? 'bg-primary-50 text-primary-700'
-                  : 'text-gray-700 hover:bg-gray-50'
-              }`}
+                  ? 'bg-blue-600 text-white'
+                  : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
+              )}
             >
-              <Icon className={`mr-3 h-5 w-5 ${isActive ? 'text-primary-700' : 'text-gray-400'}`} />
-              {item.name}
+              <Icon className="h-5 w-5 mr-3" />
+              <span>{item.name}</span>
             </Link>
           );
         })}
       </nav>
 
-      <div className="p-4 border-t border-gray-200">
-        <div className="flex items-center">
-          <div className="flex-shrink-0">
-            <div className="h-10 w-10 rounded-full bg-primary-100 flex items-center justify-center">
-              <span className="text-primary-700 font-medium">
-                {user?.firstName?.[0]}{user?.lastName?.[0]}
-              </span>
+      {/* User Profile Section */}
+      <div className="p-4 border-t border-gray-200 dark:border-gray-700">
+        <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-4 transition-colors">
+          <div className="flex items-center">
+            <div className="flex-shrink-0">
+              <div className="h-10 w-10 rounded-lg bg-blue-600 flex items-center justify-center">
+                <span className="text-white font-bold text-sm">
+                  {user?.firstName?.[0]}{user?.lastName?.[0]}
+                </span>
+              </div>
             </div>
-          </div>
-          <div className="ml-3">
-            <p className="text-sm font-medium text-gray-700">
-              {user?.firstName} {user?.lastName}
-            </p>
-            <p className="text-xs text-gray-500">{user?.role}</p>
+            <div className="ml-3 flex-1 min-w-0">
+              <p className="text-sm font-semibold text-gray-900 dark:text-white truncate">
+                {user?.firstName} {user?.lastName}
+              </p>
+              <p className="text-xs text-gray-500 dark:text-gray-400">
+                {user?.role}
+              </p>
+            </div>
           </div>
         </div>
       </div>

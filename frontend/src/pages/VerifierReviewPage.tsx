@@ -80,8 +80,8 @@ export const VerifierReviewPage: React.FC = () => {
     return (
       <Layout>
         <div className="text-center py-12">
-          <h2 className="text-2xl font-bold text-gray-900">Review not found</h2>
-          <p className="mt-2 text-gray-600">The review you're looking for doesn't exist.</p>
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Review not found</h2>
+          <p className="mt-2 text-gray-700 dark:text-gray-200">The review you're looking for doesn't exist.</p>
         </div>
       </Layout>
     );
@@ -96,8 +96,8 @@ export const VerifierReviewPage: React.FC = () => {
     <Layout>
       <div className="max-w-4xl mx-auto space-y-6">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Manual Review</h1>
-          <p className="mt-1 text-sm text-gray-500">
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Manual Review</h1>
+          <p className="mt-1 text-sm text-gray-600 dark:text-gray-300">
             Review the certificate and verification details, then submit your decision
           </p>
         </div>
@@ -105,52 +105,52 @@ export const VerifierReviewPage: React.FC = () => {
         {/* Certificate Details Card */}
         {certificate && (
           <Card>
-            <h3 className="text-lg font-semibold text-gray-900 mb-4">Certificate Details</h3>
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Certificate Details</h3>
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <p className="text-sm text-gray-500">Certificate Type</p>
-                <p className="mt-1 font-medium text-gray-900">
+                <p className="text-sm text-gray-600 dark:text-gray-300">Certificate Type</p>
+                <p className="mt-1 font-medium text-gray-900 dark:text-white">
                   {certificate.certificateType?.replace(/_/g, ' ')}
                 </p>
               </div>
               <div>
-                <p className="text-sm text-gray-500">Issuer</p>
-                <p className="mt-1 font-medium text-gray-900">{certificate.issuerName}</p>
+                <p className="text-sm text-gray-600 dark:text-gray-300">Issuer</p>
+                <p className="mt-1 font-medium text-gray-900 dark:text-white">{certificate.issuerName}</p>
               </div>
               <div>
-                <p className="text-sm text-gray-500">Student Name</p>
-                <p className="mt-1 font-medium text-gray-900">
+                <p className="text-sm text-gray-600 dark:text-gray-300">Student Name</p>
+                <p className="mt-1 font-medium text-gray-900 dark:text-white">
                   {certData.studentName || 'N/A'}
                 </p>
               </div>
               <div>
-                <p className="text-sm text-gray-500">Roll Number</p>
-                <p className="mt-1 font-medium text-gray-900">
+                <p className="text-sm text-gray-600 dark:text-gray-300">Roll Number</p>
+                <p className="mt-1 font-medium text-gray-900 dark:text-white">
                   {certData.rollNumber || 'N/A'}
                 </p>
               </div>
               <div>
-                <p className="text-sm text-gray-500">Registration Number</p>
-                <p className="mt-1 font-medium text-gray-900">
+                <p className="text-sm text-gray-600 dark:text-gray-300">Registration Number</p>
+                <p className="mt-1 font-medium text-gray-900 dark:text-white">
                   {certData.registrationNumber || certificate.certificateNumber || 'N/A'}
                 </p>
               </div>
               <div>
-                <p className="text-sm text-gray-500">Exam Year</p>
-                <p className="mt-1 font-medium text-gray-900">
+                <p className="text-sm text-gray-600 dark:text-gray-300">Exam Year</p>
+                <p className="mt-1 font-medium text-gray-900 dark:text-white">
                   {certData.examYear || 'N/A'}
                 </p>
               </div>
               <div>
-                <p className="text-sm text-gray-500">Issue Date</p>
-                <p className="mt-1 font-medium text-gray-900">
+                <p className="text-sm text-gray-600 dark:text-gray-300">Issue Date</p>
+                <p className="mt-1 font-medium text-gray-900 dark:text-white">
                   {certificate.issueDate ? formatDate(certificate.issueDate) :
                    certData.issueDate ? formatDate(certData.issueDate) : 'N/A'}
                 </p>
               </div>
               <div>
-                <p className="text-sm text-gray-500">Board/Institution</p>
-                <p className="mt-1 font-medium text-gray-900">
+                <p className="text-sm text-gray-600 dark:text-gray-300">Board/Institution</p>
+                <p className="mt-1 font-medium text-gray-900 dark:text-white">
                   {certData.board || certData.school?.name || certificate.issuerName}
                 </p>
               </div>
@@ -159,15 +159,15 @@ export const VerifierReviewPage: React.FC = () => {
             {/* Additional Certificate Information */}
             {(certificate.hasQrCode || certificate.hasDigitalSignature || certData.qrCode || certData.digitalSignature) && (
               <div className="mt-4 pt-4 border-t border-gray-200">
-                <h4 className="text-sm font-semibold text-gray-900 mb-3">Security Features</h4>
+                <h4 className="text-sm font-semibold text-gray-900 dark:text-white mb-3">Security Features</h4>
                 <div className="grid grid-cols-2 gap-4">
                   {(certificate.hasQrCode || certData.qrCode) && (
                     <div>
-                      <p className="text-sm text-gray-500">QR Code</p>
+                      <p className="text-sm text-gray-600 dark:text-gray-300">QR Code</p>
                       <div className="mt-1 flex items-center">
                         <Badge variant="success">Present</Badge>
                         {certData.qrCode && (
-                          <span className="ml-2 text-xs text-gray-600 truncate max-w-[200px]">
+                          <span className="ml-2 text-xs text-gray-700 dark:text-gray-200 truncate max-w-[200px]">
                             {certData.qrCode}
                           </span>
                         )}
@@ -176,11 +176,11 @@ export const VerifierReviewPage: React.FC = () => {
                   )}
                   {(certificate.hasDigitalSignature || certData.digitalSignature) && (
                     <div>
-                      <p className="text-sm text-gray-500">Digital Signature</p>
+                      <p className="text-sm text-gray-600 dark:text-gray-300">Digital Signature</p>
                       <div className="mt-1 flex items-center">
                         <Badge variant="success">Present</Badge>
                         {certData.digitalSignature && (
-                          <span className="ml-2 text-xs text-gray-600 truncate max-w-[200px]">
+                          <span className="ml-2 text-xs text-gray-700 dark:text-gray-200 truncate max-w-[200px]">
                             {certData.digitalSignature}
                           </span>
                         )}
@@ -194,27 +194,27 @@ export const VerifierReviewPage: React.FC = () => {
             {/* Subjects/Marks if available */}
             {certData.subjects && certData.subjects.length > 0 && (
               <div className="mt-4 pt-4 border-t border-gray-200">
-                <h4 className="text-sm font-semibold text-gray-900 mb-3">Subjects & Marks</h4>
+                <h4 className="text-sm font-semibold text-gray-900 dark:text-white mb-3">Subjects & Marks</h4>
                 <div className="overflow-x-auto">
                   <table className="min-w-full divide-y divide-gray-200">
                     <thead className="bg-gray-50">
                       <tr>
-                        <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase">Subject</th>
-                        <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase">Marks</th>
-                        <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase">Max Marks</th>
+                        <th className="px-3 py-2 text-left text-xs font-medium text-gray-600 dark:text-gray-300 uppercase">Subject</th>
+                        <th className="px-3 py-2 text-left text-xs font-medium text-gray-600 dark:text-gray-300 uppercase">Marks</th>
+                        <th className="px-3 py-2 text-left text-xs font-medium text-gray-600 dark:text-gray-300 uppercase">Max Marks</th>
                         {certData.subjects.some((s: any) => s.grade) && (
-                          <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase">Grade</th>
+                          <th className="px-3 py-2 text-left text-xs font-medium text-gray-600 dark:text-gray-300 uppercase">Grade</th>
                         )}
                       </tr>
                     </thead>
                     <tbody className="bg-white divide-y divide-gray-200">
                       {certData.subjects.map((subject: any, idx: number) => (
                         <tr key={idx}>
-                          <td className="px-3 py-2 text-sm text-gray-900">{subject.name}</td>
-                          <td className="px-3 py-2 text-sm text-gray-900">{subject.marks}</td>
-                          <td className="px-3 py-2 text-sm text-gray-900">{subject.maxMarks}</td>
+                          <td className="px-3 py-2 text-sm text-gray-900 dark:text-white">{subject.name}</td>
+                          <td className="px-3 py-2 text-sm text-gray-900 dark:text-white">{subject.marks}</td>
+                          <td className="px-3 py-2 text-sm text-gray-900 dark:text-white">{subject.maxMarks}</td>
                           {subject.grade && (
-                            <td className="px-3 py-2 text-sm text-gray-900">{subject.grade}</td>
+                            <td className="px-3 py-2 text-sm text-gray-900 dark:text-white">{subject.grade}</td>
                           )}
                         </tr>
                       ))}
@@ -225,20 +225,20 @@ export const VerifierReviewPage: React.FC = () => {
                   <div className="mt-3 grid grid-cols-3 gap-4">
                     {certData.totalMarks && (
                       <div>
-                        <p className="text-sm text-gray-500">Total Marks</p>
-                        <p className="mt-1 font-medium text-gray-900">{certData.totalMarks}</p>
+                        <p className="text-sm text-gray-600 dark:text-gray-300">Total Marks</p>
+                        <p className="mt-1 font-medium text-gray-900 dark:text-white">{certData.totalMarks}</p>
                       </div>
                     )}
                     {certData.percentage && (
                       <div>
-                        <p className="text-sm text-gray-500">Percentage</p>
-                        <p className="mt-1 font-medium text-gray-900">{certData.percentage}%</p>
+                        <p className="text-sm text-gray-600 dark:text-gray-300">Percentage</p>
+                        <p className="mt-1 font-medium text-gray-900 dark:text-white">{certData.percentage}%</p>
                       </div>
                     )}
                     {certData.grade && (
                       <div>
-                        <p className="text-sm text-gray-500">Overall Grade</p>
-                        <p className="mt-1 font-medium text-gray-900">{certData.grade}</p>
+                        <p className="text-sm text-gray-600 dark:text-gray-300">Overall Grade</p>
+                        <p className="mt-1 font-medium text-gray-900 dark:text-white">{certData.grade}</p>
                       </div>
                     )}
                   </div>
@@ -251,17 +251,17 @@ export const VerifierReviewPage: React.FC = () => {
         {/* Verification Status */}
         {verification && (
           <Card>
-            <h3 className="text-lg font-semibold text-gray-900 mb-4">Verification Status</h3>
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Verification Status</h3>
             <div className="space-y-3">
               <div className="flex items-center justify-between">
-                <span className="text-sm text-gray-500">Current Status</span>
+                <span className="text-sm text-gray-600 dark:text-gray-300">Current Status</span>
                 <Badge variant={mapColorToBadgeVariant(getVerificationStatusColor(verification.status))}>
                   {getVerificationStatusLabel(verification.status)}
                 </Badge>
               </div>
               {verification.result && (
                 <div className="flex items-center justify-between">
-                  <span className="text-sm text-gray-500">Verification Result</span>
+                  <span className="text-sm text-gray-600 dark:text-gray-300">Verification Result</span>
                   <Badge variant={mapColorToBadgeVariant(getVerificationResultColor(verification.result))}>
                     {getVerificationResultLabel(verification.result)}
                   </Badge>
@@ -269,7 +269,7 @@ export const VerifierReviewPage: React.FC = () => {
               )}
               {verification.confidenceScore !== null && verification.confidenceScore !== undefined && (
                 <div className="flex items-center justify-between">
-                  <span className="text-sm text-gray-500">Confidence Score</span>
+                  <span className="text-sm text-gray-600 dark:text-gray-300">Confidence Score</span>
                   <div className="flex items-center gap-2">
                     <div className="w-32 bg-gray-200 rounded-full h-2">
                       <div
@@ -283,7 +283,7 @@ export const VerifierReviewPage: React.FC = () => {
                         style={{ width: `${verification.confidenceScore}%` }}
                       />
                     </div>
-                    <span className="font-medium text-gray-900">
+                    <span className="font-medium text-gray-900 dark:text-white">
                       {verification.confidenceScore}%
                     </span>
                   </div>
@@ -291,20 +291,20 @@ export const VerifierReviewPage: React.FC = () => {
               )}
               {verification.verificationType && (
                 <div className="flex items-center justify-between">
-                  <span className="text-sm text-gray-500">Verification Type</span>
-                  <span className="font-medium text-gray-900">
+                  <span className="text-sm text-gray-600 dark:text-gray-300">Verification Type</span>
+                  <span className="font-medium text-gray-900 dark:text-white">
                     {verification.verificationType.replace(/_/g, ' ')}
                   </span>
                 </div>
               )}
               <div className="flex items-center justify-between">
-                <span className="text-sm text-gray-500">Started At</span>
-                <span className="text-gray-900">{formatDate(verification.startedAt || verification.createdAt)}</span>
+                <span className="text-sm text-gray-600 dark:text-gray-300">Started At</span>
+                <span className="text-gray-900 dark:text-white">{formatDate(verification.startedAt || verification.createdAt)}</span>
               </div>
               {verification.completedAt && (
                 <div className="flex items-center justify-between">
-                  <span className="text-sm text-gray-500">Completed At</span>
-                  <span className="text-gray-900">{formatDate(verification.completedAt)}</span>
+                  <span className="text-sm text-gray-600 dark:text-gray-300">Completed At</span>
+                  <span className="text-gray-900 dark:text-white">{formatDate(verification.completedAt)}</span>
                 </div>
               )}
             </div>
@@ -314,14 +314,14 @@ export const VerifierReviewPage: React.FC = () => {
         {/* Verification Evidence */}
         {verification?.resultData && Object.keys(verification.resultData).length > 0 && (
           <Card>
-            <h3 className="text-lg font-semibold text-gray-900 mb-4">Verification Evidence</h3>
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Verification Evidence</h3>
             <div className="space-y-3">
               {Object.entries(verification.resultData).map(([key, value]: [string, any]) => (
                 <div key={key} className="border-b border-gray-200 pb-3 last:border-0">
-                  <p className="text-sm font-medium text-gray-700 capitalize">
+                  <p className="text-sm font-medium text-gray-700 dark:text-gray-200 capitalize">
                     {key.replace(/_/g, ' ')}
                   </p>
-                  <div className="mt-1 text-sm text-gray-900">
+                  <div className="mt-1 text-sm text-gray-900 dark:text-white">
                     {typeof value === 'object' && value !== null ? (
                       <pre className="bg-gray-50 p-2 rounded text-xs overflow-x-auto">
                         {JSON.stringify(value, null, 2)}
@@ -339,7 +339,7 @@ export const VerifierReviewPage: React.FC = () => {
         {/* Verification Steps */}
         {verification?.steps && verification.steps.length > 0 && (
           <Card>
-            <h3 className="text-lg font-semibold text-gray-900 mb-4">Verification Steps</h3>
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Verification Steps</h3>
             <div className="space-y-3">
               {verification.steps.map((step: any, index: number) => (
                 <div key={index} className="flex items-start gap-3">
@@ -349,16 +349,16 @@ export const VerifierReviewPage: React.FC = () => {
                         ? 'bg-green-100 text-green-600'
                         : step.status === 'FAILED'
                         ? 'bg-red-100 text-red-600'
-                        : 'bg-gray-100 text-gray-600'
+                        : 'bg-gray-100 text-gray-200'
                     }`}
                   >
                     {step.status === 'COMPLETED' ? '✓' : step.status === 'FAILED' ? '✗' : '○'}
                   </div>
                   <div className="flex-1">
-                    <p className="font-medium text-gray-900">{step.stepName}</p>
-                    <p className="text-sm text-gray-500">{step.description}</p>
+                    <p className="font-medium text-gray-900 dark:text-white">{step.stepName}</p>
+                    <p className="text-sm text-gray-600 dark:text-gray-300">{step.description}</p>
                     {step.result && (
-                      <div className="text-xs text-gray-600 mt-1">
+                      <div className="text-xs text-gray-700 dark:text-gray-200 mt-1">
                         <span className="font-medium">Result: </span>
                         {typeof step.result === 'object' && step.result !== null ? (
                           <pre className="bg-gray-50 p-2 rounded mt-1 overflow-x-auto">
@@ -378,7 +378,7 @@ export const VerifierReviewPage: React.FC = () => {
 
         {/* Review Form */}
         <Card>
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">Submit Review</h3>
+          <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Submit Review</h3>
           <ReviewForm
             onSubmit={handleSubmit}
             onCancel={handleCancel}

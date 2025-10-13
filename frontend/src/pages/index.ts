@@ -5,6 +5,8 @@ export { CertificatesPage } from './CertificatesPage';
 export { UploadCertificatePage } from './UploadCertificatePage';
 export { VerificationsPage } from './VerificationsPage';
 export { VerificationDetailPage } from './VerificationDetailPage';
+export { SignatureMatchingPage } from './SignatureMatchingPage';
+export { PANAadhaarMatchingPage } from './PANAadhaarMatchingPage';
 export { VerifierQueuePage } from './VerifierQueuePage';
 export { VerifierReviewPage } from './VerifierReviewPage';
 export { AdminUsersPage } from './AdminUsersPage';

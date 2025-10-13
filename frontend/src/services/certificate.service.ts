@@ -2,6 +2,8 @@ import { api } from './api.service';
 import {
   Certificate,
   CreateCertificateRequest,
+  CreateAadhaarRequest,
+  CreatePANRequest,
   CertificateStats,
   ApiResponse,
   PaginatedResponse,
@@ -66,6 +68,35 @@ class CertificateService {
       success: true,
       data: certificate,
       message: 'Certificate uploaded successfully',
+      timestamp: new Date().toISOString(),
+    };
+  }
+
+  // Identity document specific methods
+  async createAadhaar(data: CreateAadhaarRequest): Promise<Certificate> {
+    return this.create(data as any);
+  }
+
+  async createPAN(data: CreatePANRequest): Promise<Certificate> {
+    return this.create(data as any);
+  }
+
+  async uploadAadhaar(data: CreateAadhaarRequest): Promise<ApiResponse<Certificate>> {
+    const certificate = await this.createAadhaar(data);
+    return {
+      success: true,
+      data: certificate,
+      message: 'Aadhaar card uploaded successfully',
+      timestamp: new Date().toISOString(),
+    };
+  }
+
+  async uploadPAN(data: CreatePANRequest): Promise<ApiResponse<Certificate>> {
+    const certificate = await this.createPAN(data);
+    return {
+      success: true,
+      data: certificate,
+      message: 'PAN card uploaded successfully',
       timestamp: new Date().toISOString(),
     };
   }

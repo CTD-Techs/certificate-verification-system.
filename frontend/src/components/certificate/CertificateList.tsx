@@ -18,17 +18,41 @@ export const CertificateList: React.FC<CertificateListProps> = ({
   const [searchTerm, setSearchTerm] = useState('');
   const [typeFilter, setTypeFilter] = useState('');
   const [issuerFilter, setIssuerFilter] = useState('');
+  const [documentCategoryFilter, setDocumentCategoryFilter] = useState<'ALL' | 'EDUCATIONAL' | 'IDENTITY'>('ALL');
   const [currentPage, setCurrentPage] = useState(1);
   const [sortBy, setSortBy] = useState<string>('');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
   const itemsPerPage = 10;
 
+  const isIdentityDocument = (certType: string) => {
+    return certType === 'AADHAAR_CARD' || certType === 'PAN_CARD';
+  };
+
+  const maskIdentityNumber = (certType: string, data: any): string => {
+    if (certType === 'AADHAAR_CARD' && data?.aadhaarNumber) {
+      return 'XXXX-XXXX-' + data.aadhaarNumber.slice(-4);
+    }
+    if (certType === 'PAN_CARD' && data?.panNumber) {
+      return 'XXXXX' + data.panNumber.slice(-4);
+    }
+    return 'N/A';
+  };
+
   // Filter certificates
   const filteredCertificates = certificates.filter((cert) => {
+    const isIdentity = isIdentityDocument(cert.certificateType);
+    
+    // Document category filter
+    if (documentCategoryFilter === 'EDUCATIONAL' && isIdentity) return false;
+    if (documentCategoryFilter === 'IDENTITY' && !isIdentity) return false;
+
     const matchesSearch =
       !searchTerm ||
       cert.certificateData?.studentName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      cert.certificateData?.holderName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
       cert.certificateData?.rollNumber?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      cert.certificateData?.aadhaarNumber?.includes(searchTerm) ||
+      cert.certificateData?.panNumber?.toLowerCase().includes(searchTerm.toLowerCase()) ||
       cert.certificateNumber?.toLowerCase().includes(searchTerm.toLowerCase()) ||
       cert.id.toLowerCase().includes(searchTerm.toLowerCase());
 
@@ -91,15 +115,34 @@ export const CertificateList: React.FC<CertificateListProps> = ({
       ),
     },
     {
-      key: 'studentName',
-      header: 'Student Name',
+      key: 'holderName',
+      header: 'Holder/Student Name',
       sortable: true,
-      render: (cert) => (
-        <div>
-        <p className="text-sm font-medium text-gray-900">{cert.certificateData?.studentName || 'N/A'}</p>
-        <p className="text-xs text-gray-500">{cert.certificateData?.rollNumber || 'N/A'}</p>
-        </div>
-      ),
+      render: (cert) => {
+        const isIdentity = isIdentityDocument(cert.certificateType);
+        if (isIdentity) {
+          return (
+            <div>
+              <p className="text-sm font-medium text-gray-900">
+                {cert.certificateData?.holderName || 'N/A'}
+              </p>
+              <p className="text-xs text-gray-500 font-mono">
+                {maskIdentityNumber(cert.certificateType, cert.certificateData)}
+              </p>
+            </div>
+          );
+        }
+        return (
+          <div>
+            <p className="text-sm font-medium text-gray-900">
+              {cert.certificateData?.studentName || 'N/A'}
+            </p>
+            <p className="text-xs text-gray-500">
+              {cert.certificateData?.rollNumber || 'N/A'}
+            </p>
+          </div>
+        );
+      },
     },
     {
       key: 'issuerType',
@@ -114,8 +157,19 @@ export const CertificateList: React.FC<CertificateListProps> = ({
     },
     {
       key: 'examYear',
-      header: 'Exam Year',
+      header: 'Year/DOB',
       sortable: true,
+      render: (cert) => {
+        const isIdentity = isIdentityDocument(cert.certificateType);
+        if (isIdentity) {
+          return (
+            <span className="text-sm">
+              {cert.certificateData?.dateOfBirth ? formatDate(cert.certificateData.dateOfBirth) : 'N/A'}
+            </span>
+          );
+        }
+        return <span className="text-sm">{cert.certificateData?.examYear || 'N/A'}</span>;
+      },
     },
     {
       key: 'issueDate',
@@ -144,12 +198,46 @@ export const CertificateList: React.FC<CertificateListProps> = ({
 
   return (
     <div className="space-y-4">
+      {/* Document Category Filter */}
+      <div className="flex gap-2 border-b border-gray-200 pb-4">
+        <button
+          onClick={() => setDocumentCategoryFilter('ALL')}
+          className={`px-4 py-2 rounded-md font-medium transition-colors ${
+            documentCategoryFilter === 'ALL'
+              ? 'bg-blue-600 text-white'
+              : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+          }`}
+        >
+          All Documents
+        </button>
+        <button
+          onClick={() => setDocumentCategoryFilter('EDUCATIONAL')}
+          className={`px-4 py-2 rounded-md font-medium transition-colors ${
+            documentCategoryFilter === 'EDUCATIONAL'
+              ? 'bg-blue-600 text-white'
+              : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+          }`}
+        >
+          Educational
+        </button>
+        <button
+          onClick={() => setDocumentCategoryFilter('IDENTITY')}
+          className={`px-4 py-2 rounded-md font-medium transition-colors ${
+            documentCategoryFilter === 'IDENTITY'
+              ? 'bg-blue-600 text-white'
+              : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+          }`}
+        >
+          Identity Documents
+        </button>
+      </div>
+
       {/* Filters */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <Input
-          placeholder="Search by name, roll number, or ID..."
+          placeholder="Search by name, number, or ID..."
           value={searchTerm}
-          onChange={setSearchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
         />
         <Select
           placeholder="Filter by type"

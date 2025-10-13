@@ -51,8 +51,8 @@ export const AdminStatsPage: React.FC = () => {
     <Layout>
       <div className="space-y-6">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">System Statistics</h1>
-          <p className="mt-1 text-sm text-gray-500">
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">System Statistics</h1>
+          <p className="mt-1 text-sm text-gray-600 dark:text-gray-300">
             Overview of system performance and metrics
           </p>
         </div>
@@ -90,31 +90,31 @@ export const AdminStatsPage: React.FC = () => {
         {/* Verification Status Breakdown */}
         {stats?.verificationBreakdown && (
           <Card>
-            <h3 className="text-lg font-semibold text-gray-900 mb-4">Verification Status</h3>
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Verification Status</h3>
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
               <div className="text-center p-4 bg-green-50 rounded-lg">
                 <p className="text-2xl font-bold text-green-600">
                   {stats.verificationBreakdown.verified || 0}
                 </p>
-                <p className="text-sm text-gray-600 mt-1">Verified</p>
+                <p className="text-sm text-gray-700 dark:text-gray-200 mt-1">Verified</p>
               </div>
               <div className="text-center p-4 bg-red-50 rounded-lg">
                 <p className="text-2xl font-bold text-red-600">
                   {stats.verificationBreakdown.unverified || 0}
                 </p>
-                <p className="text-sm text-gray-600 mt-1">Unverified</p>
+                <p className="text-sm text-gray-700 dark:text-gray-200 mt-1">Unverified</p>
               </div>
               <div className="text-center p-4 bg-yellow-50 rounded-lg">
                 <p className="text-2xl font-bold text-yellow-600">
                   {stats.verificationBreakdown.pending || 0}
                 </p>
-                <p className="text-sm text-gray-600 mt-1">Pending</p>
+                <p className="text-sm text-gray-700 dark:text-gray-200 mt-1">Pending</p>
               </div>
               <div className="text-center p-4 bg-blue-50 rounded-lg">
                 <p className="text-2xl font-bold text-blue-600">
                   {stats.verificationBreakdown.manualReview || 0}
                 </p>
-                <p className="text-sm text-gray-600 mt-1">Manual Review</p>
+                <p className="text-sm text-gray-700 dark:text-gray-200 mt-1">Manual Review</p>
               </div>
             </div>
           </Card>
@@ -123,23 +123,23 @@ export const AdminStatsPage: React.FC = () => {
         {/* User Role Distribution */}
         {stats?.userRoles && (
           <Card>
-            <h3 className="text-lg font-semibold text-gray-900 mb-4">User Roles</h3>
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">User Roles</h3>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
-                <span className="text-gray-600">API Users</span>
-                <span className="text-2xl font-bold text-gray-900">
+                <span className="text-gray-700 dark:text-gray-200">API Users</span>
+                <span className="text-2xl font-bold text-gray-900 dark:text-white">
                   {stats.userRoles.API_USER || 0}
                 </span>
               </div>
               <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
-                <span className="text-gray-600">Verifiers</span>
-                <span className="text-2xl font-bold text-gray-900">
+                <span className="text-gray-700 dark:text-gray-200">Verifiers</span>
+                <span className="text-2xl font-bold text-gray-900 dark:text-white">
                   {stats.userRoles.VERIFIER || 0}
                 </span>
               </div>
               <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
-                <span className="text-gray-600">Admins</span>
-                <span className="text-2xl font-bold text-gray-900">
+                <span className="text-gray-700 dark:text-gray-200">Admins</span>
+                <span className="text-2xl font-bold text-gray-900 dark:text-white">
                   {stats.userRoles.ADMIN || 0}
                 </span>
               </div>
@@ -149,9 +149,9 @@ export const AdminStatsPage: React.FC = () => {
 
         {/* Recent Activity */}
         <Card>
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">Recent Activity</h3>
+          <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Recent Activity</h3>
           {activities.length === 0 ? (
-            <p className="text-gray-500 text-center py-8">No recent activity</p>
+            <p className="text-gray-600 dark:text-gray-300 text-center py-8">No recent activity</p>
           ) : (
             <div className="space-y-3">
               {activities.slice(0, 10).map((activity: any, index: number) => (
@@ -175,8 +175,8 @@ export const AdminStatsPage: React.FC = () => {
                     </svg>
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium text-gray-900">{activity.action}</p>
-                    <p className="text-xs text-gray-500 mt-1">
+                    <p className="text-sm font-medium text-gray-900 dark:text-white">{activity.action}</p>
+                    <p className="text-xs text-gray-600 dark:text-gray-300 mt-1">
                       {activity.user?.email || 'System'} • {formatDate(activity.timestamp)}
                     </p>
                   </div>
@@ -189,7 +189,7 @@ export const AdminStatsPage: React.FC = () => {
         {/* System Health */}
         {stats?.systemHealth && (
           <Card>
-            <h3 className="text-lg font-semibold text-gray-900 mb-4">System Health</h3>
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">System Health</h3>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div className="text-center p-4 border border-gray-200 rounded-lg">
                 <div className="flex items-center justify-center mb-2">
@@ -201,8 +201,8 @@ export const AdminStatsPage: React.FC = () => {
                     }`}
                   />
                 </div>
-                <p className="text-sm font-medium text-gray-900">Database</p>
-                <p className="text-xs text-gray-500 mt-1 capitalize">
+                <p className="text-sm font-medium text-gray-900 dark:text-white">Database</p>
+                <p className="text-xs text-gray-600 dark:text-gray-300 mt-1 capitalize">
                   {stats.systemHealth.database}
                 </p>
               </div>
@@ -214,8 +214,8 @@ export const AdminStatsPage: React.FC = () => {
                     }`}
                   />
                 </div>
-                <p className="text-sm font-medium text-gray-900">API</p>
-                <p className="text-xs text-gray-500 mt-1 capitalize">{stats.systemHealth.api}</p>
+                <p className="text-sm font-medium text-gray-900 dark:text-white">API</p>
+                <p className="text-xs text-gray-600 dark:text-gray-300 mt-1 capitalize">{stats.systemHealth.api}</p>
               </div>
               <div className="text-center p-4 border border-gray-200 rounded-lg">
                 <div className="flex items-center justify-center mb-2">
@@ -227,8 +227,8 @@ export const AdminStatsPage: React.FC = () => {
                     }`}
                   />
                 </div>
-                <p className="text-sm font-medium text-gray-900">Storage</p>
-                <p className="text-xs text-gray-500 mt-1 capitalize">
+                <p className="text-sm font-medium text-gray-900 dark:text-white">Storage</p>
+                <p className="text-xs text-gray-600 dark:text-gray-300 mt-1 capitalize">
                   {stats.systemHealth.storage}
                 </p>
               </div>

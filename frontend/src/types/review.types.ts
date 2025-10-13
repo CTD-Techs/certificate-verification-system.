@@ -13,11 +13,13 @@ export interface ManualReview {
   verifierId?: string;
   status: ReviewStatus;
   priority: ReviewPriority;
+  reason?: string;
   decision?: ReviewDecision;
   comments?: string;
   confidenceScore?: number;
   evidence?: string[];
   assignedAt?: string;
+  reviewedAt?: string;
   completedAt?: string;
   createdAt: string;
   updatedAt: string;

@@ -5,6 +5,7 @@ import verificationRoutes from './verification.routes';
 import verifierRoutes from './verifier.routes';
 import auditRoutes from './audit.routes';
 import adminRoutes from './admin.routes';
+import documentProcessingRoutes from './document-processing.routes';
 
 const router = Router();
 
@@ -17,6 +18,7 @@ router.use('/verifications', verificationRoutes);
 router.use('/verifier', verifierRoutes);
 router.use('/audit', auditRoutes);
 router.use('/admin', adminRoutes);
+router.use('/document-processing', documentProcessingRoutes);
 
 /**
  * API v1 health check

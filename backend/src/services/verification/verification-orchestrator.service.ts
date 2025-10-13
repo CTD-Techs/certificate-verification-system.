@@ -17,6 +17,8 @@ import { generateAuditHash } from '../../utils/crypto';
 import digilockerMock from '../mock/digilocker-mock.service';
 import cbseMock from '../mock/cbse-portal-mock.service';
 import forensicMock from '../mock/forensic-mock.service';
+import aadhaarMock from '../mock/aadhaar-mock.service';
+import panMock from '../mock/pan-mock.service';
 import confidenceCalculator from './confidence-calculator.service';
 import evidenceCollector from './evidence-collector.service';
 import notificationService from './notification.service';
@@ -86,6 +88,107 @@ class VerificationOrchestratorService {
   }
 
   /**
+   * Run Aadhaar verification
+   */
+  private async runAadhaarVerification(
+    verificationId: string,
+    certificate: Certificate,
+    stepNumber: number
+  ): Promise<{ verified: boolean; response: any }> {
+    const step = await this.createStep(
+      verificationId,
+      StepType.API_CALL,
+      'Verifying Aadhaar details',
+      stepNumber
+    );
+
+    try {
+      const aadhaarData = certificate.certificateData.aadhaar || certificate.certificateData;
+      
+      if (!aadhaarData.aadhaarNumber) {
+        await this.updateStep(step.id, {
+          status: StepStatus.FAILED,
+          errorMessage: 'Aadhaar number not provided',
+        });
+        return { verified: false, response: null };
+      }
+
+      const response = await aadhaarMock.verifyAadhaar({
+        aadhaarNumber: aadhaarData.aadhaarNumber,
+        name: aadhaarData.name || certificate.certificateData.studentName || '',
+        dob: aadhaarData.dob || certificate.certificateData.dateOfBirth || '',
+        gender: aadhaarData.gender,
+        address: aadhaarData.address,
+      });
+
+      const verified = response.status === 'SUCCESS' && response.verified === true;
+
+      await this.updateStep(step.id, {
+        status: verified ? StepStatus.COMPLETED : StepStatus.FAILED,
+        result: response,
+      });
+
+      return { verified, response };
+    } catch (error: any) {
+      await this.updateStep(step.id, {
+        status: StepStatus.FAILED,
+        errorMessage: error.message,
+      });
+      return { verified: false, response: null };
+    }
+  }
+
+  /**
+   * Run PAN verification
+   */
+  private async runPANVerification(
+    verificationId: string,
+    certificate: Certificate,
+    stepNumber: number
+  ): Promise<{ verified: boolean; response: any }> {
+    const step = await this.createStep(
+      verificationId,
+      StepType.API_CALL,
+      'Verifying PAN details',
+      stepNumber
+    );
+
+    try {
+      const panData = certificate.certificateData.pan || certificate.certificateData;
+      
+      if (!panData.panNumber) {
+        await this.updateStep(step.id, {
+          status: StepStatus.FAILED,
+          errorMessage: 'PAN number not provided',
+        });
+        return { verified: false, response: null };
+      }
+
+      const response = await panMock.verifyPAN({
+        panNumber: panData.panNumber,
+        name: panData.name || certificate.certificateData.studentName || '',
+        dob: panData.dob || certificate.certificateData.dateOfBirth || '',
+        category: panData.category,
+      });
+
+      const verified = response.status === 'SUCCESS' && response.verified === true;
+
+      await this.updateStep(step.id, {
+        status: verified ? StepStatus.COMPLETED : StepStatus.FAILED,
+        result: response,
+      });
+
+      return { verified, response };
+    } catch (error: any) {
+      await this.updateStep(step.id, {
+        status: StepStatus.FAILED,
+        errorMessage: error.message,
+      });
+      return { verified: false, response: null };
+    }
+  }
+
+  /**
    * Run the complete verification pipeline
    */
   private async runVerificationPipeline(
@@ -106,6 +209,122 @@ class VerificationOrchestratorService {
         throw new NotFoundError('Verification not found');
       }
 
+      let stepCounter = 0;
+
+      // Check if this is an identity document (Aadhaar or PAN)
+      const isAadhaarCard = certificate.certificateType === 'AADHAAR_CARD';
+      const isPANCard = certificate.certificateType === 'PAN_CARD';
+      const isIdentityDocument = isAadhaarCard || isPANCard;
+
+      // Identity document verification pipeline
+      if (isIdentityDocument) {
+        let identityVerified = false;
+        let identityResponse;
+
+        if (isAadhaarCard) {
+          const aadhaarResult = await this.runAadhaarVerification(
+            verificationId,
+            certificate,
+            ++stepCounter
+          );
+          identityVerified = aadhaarResult.verified;
+          identityResponse = aadhaarResult.response;
+        } else if (isPANCard) {
+          const panResult = await this.runPANVerification(
+            verificationId,
+            certificate,
+            ++stepCounter
+          );
+          identityVerified = panResult.verified;
+          identityResponse = panResult.response;
+        }
+
+        // For identity documents, verification is simpler
+        const confidenceResult = confidenceCalculator.calculate({
+          identityVerified,
+          isIdentityDocument: true,
+        });
+
+        const evidence = evidenceCollector.collect({
+          identityResponse,
+          identityVerified,
+        });
+
+        // Determine result
+        let finalResult: VerificationResult;
+        let finalStatus: VerificationStatus;
+
+        if (confidenceResult.score >= 70) {
+          finalResult = VerificationResult.VERIFIED;
+          finalStatus = VerificationStatus.COMPLETED;
+          
+          // Update certificate identity verification status
+          certificate.identityVerified = true;
+          certificate.identityVerifiedAt = new Date();
+          await this.certificateRepository.save(certificate);
+        } else if (confidenceResult.score < 40) {
+          finalResult = VerificationResult.UNVERIFIED;
+          finalStatus = VerificationStatus.COMPLETED;
+        } else {
+          finalResult = VerificationResult.INCONCLUSIVE;
+          finalStatus = VerificationStatus.COMPLETED;
+          
+          await manualReviewService.createReview({
+            certificateId: certificate.id,
+            reason: `Identity verification inconclusive: ${confidenceResult.score}%`,
+            priority: ReviewPriority.HIGH,
+          });
+        }
+
+        // Update verification
+        const duration = Date.now() - startTime;
+        verification.status = finalStatus;
+        verification.result = finalResult;
+        verification.confidenceScore = confidenceResult.score;
+        verification.resultData = {
+          evidence,
+          confidenceFactors: confidenceResult.factors,
+          recommendation: confidenceResult.recommendation,
+        };
+        verification.completedAt = new Date();
+        verification.durationMs = duration;
+
+        await this.verificationRepository.save(verification);
+
+        // Create audit log
+        await this.createAuditLog({
+          entityType: 'VERIFICATION',
+          entityId: verification.id,
+          action: 'VERIFICATION_COMPLETED',
+          userId,
+          metadata: {
+            result: finalResult,
+            confidenceScore: confidenceResult.score,
+            duration,
+            documentType: certificate.certificateType,
+          },
+        });
+
+        // Send notifications
+        await notificationService.sendVerificationComplete({
+          verificationId: verification.id,
+          certificateId: certificate.id,
+          status: finalStatus,
+          result: finalResult,
+          confidenceScore: confidenceResult.score,
+        });
+
+        logger.info('Identity verification completed', {
+          verificationId,
+          result: finalResult,
+          score: confidenceResult.score,
+          duration,
+        });
+
+        return;
+      }
+
+      // Standard document verification pipeline (existing logic)
       // Step 1: Check for QR code/digital signature → DigiLocker
       let digilockerResponse;
       let digilockerVerified = false;
@@ -183,7 +402,47 @@ class VerificationOrchestratorService {
         });
       }
 
-      // Step 4: Calculate confidence score
+      // Step 4: Optional identity verification for educational certificates
+      let aadhaarVerified = false;
+      let panVerified = false;
+      let aadhaarResponse;
+      let panResponse;
+
+      // Check if Aadhaar data is provided
+      if (certificate.certificateData.aadhaar?.aadhaarNumber) {
+        const aadhaarResult = await this.runAadhaarVerification(
+          verificationId,
+          certificate,
+          ++stepCounter
+        );
+        aadhaarVerified = aadhaarResult.verified;
+        aadhaarResponse = aadhaarResult.response;
+
+        if (aadhaarVerified) {
+          certificate.identityVerified = true;
+          certificate.identityVerifiedAt = new Date();
+          await this.certificateRepository.save(certificate);
+        }
+      }
+
+      // Check if PAN data is provided
+      if (certificate.certificateData.pan?.panNumber) {
+        const panResult = await this.runPANVerification(
+          verificationId,
+          certificate,
+          ++stepCounter
+        );
+        panVerified = panResult.verified;
+        panResponse = panResult.response;
+
+        if (panVerified && !certificate.identityVerified) {
+          certificate.identityVerified = true;
+          certificate.identityVerifiedAt = new Date();
+          await this.certificateRepository.save(certificate);
+        }
+      }
+
+      // Step 5: Calculate confidence score
       const confidenceResult = confidenceCalculator.calculate({
         digilockerVerified,
         cbseVerified,
@@ -191,6 +450,8 @@ class VerificationOrchestratorService {
         qrCodeValid: !!certificate.hasQrCode && digilockerVerified,
         digitalSignatureValid: !!certificate.hasDigitalSignature && digilockerVerified,
         forensicRiskScore: forensicResult?.riskScore,
+        aadhaarVerified,
+        panVerified,
       });
 
       logger.info('Confidence score calculated', {
@@ -199,16 +460,20 @@ class VerificationOrchestratorService {
         recommendation: confidenceResult.recommendation,
       });
 
-      // Step 5: Collect evidence
+      // Step 6: Collect evidence
       const evidence = evidenceCollector.collect({
         digilockerResponse,
         cbseResponse,
         forensicResult,
         qrCodeValid: !!certificate.hasQrCode && digilockerVerified,
         qrCodeData: certificate.certificateData.qrCode,
+        aadhaarResponse,
+        panResponse,
+        aadhaarVerified,
+        panVerified,
       });
 
-      // Step 6: Determine result
+      // Step 7: Determine result
       let finalResult: VerificationResult;
       let finalStatus: VerificationStatus;
 
@@ -233,7 +498,7 @@ class VerificationOrchestratorService {
         logger.info('Manual review created', { verificationId, score: confidenceResult.score });
       }
 
-      // Step 7: Update verification
+      // Step 8: Update verification
       const duration = Date.now() - startTime;
       
       verification.status = finalStatus;
@@ -249,7 +514,7 @@ class VerificationOrchestratorService {
 
       await this.verificationRepository.save(verification);
 
-      // Step 8: Create audit log
+      // Step 9: Create audit log
       await this.createAuditLog({
         entityType: 'VERIFICATION',
         entityId: verification.id,
@@ -262,7 +527,7 @@ class VerificationOrchestratorService {
         },
       });
 
-      // Step 9: Send notifications
+      // Step 10: Send notifications
       await notificationService.sendVerificationComplete({
         verificationId: verification.id,
         certificateId: certificate.id,

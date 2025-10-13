@@ -7,6 +7,10 @@ export interface ConfidenceFactors {
   qrCodeValid?: boolean;
   digitalSignatureValid?: boolean;
   forensicRiskScore?: number;
+  aadhaarVerified?: boolean;
+  panVerified?: boolean;
+  identityVerified?: boolean;
+  isIdentityDocument?: boolean;
 }
 
 export interface ConfidenceResult {
@@ -30,6 +34,9 @@ class ConfidenceCalculatorService {
     forensic: 30,
     qrCode: 20,
     digitalSignature: 20,
+    aadhaar: 60,
+    pan: 55,
+    identity: 80, // For identity documents (Aadhaar/PAN cards)
   };
 
   private readonly thresholds = {
@@ -44,6 +51,61 @@ class ConfidenceCalculatorService {
     const scoreFactors: ConfidenceResult['factors'] = [];
     let totalScore = 0;
 
+    // Special handling for identity documents (Aadhaar/PAN cards)
+    if (factors.isIdentityDocument) {
+      if (factors.identityVerified !== undefined) {
+        const passed = factors.identityVerified;
+        const contribution = passed ? this.weights.identity : 0;
+        totalScore += contribution;
+        scoreFactors.push({
+          name: 'Identity Verification',
+          weight: this.weights.identity,
+          passed,
+          contribution,
+        });
+      }
+
+      // For identity documents, we rely primarily on the identity verification
+      // Add a small bonus if additional checks pass
+      if (factors.forensicPassed !== undefined) {
+        const passed = factors.forensicPassed;
+        const contribution = passed ? 20 : -10;
+        totalScore += contribution;
+        scoreFactors.push({
+          name: 'Document Forensics',
+          weight: 20,
+          passed,
+          contribution,
+        });
+      }
+
+      // Ensure score is between 0 and 100
+      const finalScore = Math.max(0, Math.min(100, totalScore));
+
+      // Determine recommendation
+      let recommendation: 'ACCEPT' | 'REVIEW' | 'REJECT';
+      if (finalScore >= this.thresholds.accept) {
+        recommendation = 'ACCEPT';
+      } else if (finalScore >= this.thresholds.review) {
+        recommendation = 'REVIEW';
+      } else {
+        recommendation = 'REJECT';
+      }
+
+      logger.info('Identity document confidence score calculated', {
+        score: finalScore,
+        recommendation,
+        factorsCount: scoreFactors.length,
+      });
+
+      return {
+        score: finalScore,
+        factors: scoreFactors,
+        recommendation,
+      };
+    }
+
+    // Standard document verification (educational certificates, etc.)
     // DigiLocker verification
     if (factors.digilockerVerified !== undefined) {
       const passed = factors.digilockerVerified;
@@ -119,6 +181,32 @@ class ConfidenceCalculatorService {
       });
     }
 
+    // Aadhaar verification (for educational certificates with identity data)
+    if (factors.aadhaarVerified !== undefined) {
+      const passed = factors.aadhaarVerified;
+      const contribution = passed ? this.weights.aadhaar : 0;
+      totalScore += contribution;
+      scoreFactors.push({
+        name: 'Aadhaar Verification',
+        weight: this.weights.aadhaar,
+        passed,
+        contribution,
+      });
+    }
+
+    // PAN verification (for educational certificates with identity data)
+    if (factors.panVerified !== undefined) {
+      const passed = factors.panVerified;
+      const contribution = passed ? this.weights.pan : 0;
+      totalScore += contribution;
+      scoreFactors.push({
+        name: 'PAN Verification',
+        weight: this.weights.pan,
+        passed,
+        contribution,
+      });
+    }
+
     // Ensure score is between 0 and 100
     const finalScore = Math.max(0, Math.min(100, totalScore));
 
@@ -138,9 +226,8 @@ class ConfidenceCalculatorService {
       factorsCount: scoreFactors.length,
     });
 
-    // Convert to 0-1 range for frontend (frontend expects decimal, not percentage)
     return {
-      score: Math.round(finalScore) / 100,
+      score: finalScore,
       factors: scoreFactors,
       recommendation,
     };

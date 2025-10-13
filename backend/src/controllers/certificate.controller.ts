@@ -16,6 +16,18 @@ export const uploadCertificate = async (
   next: NextFunction
 ): Promise<void> => {
   try {
+    console.log('[CERTIFICATE] ===== CREATE CERTIFICATE REQUEST =====');
+    console.log('[CERTIFICATE] Request body:', JSON.stringify(req.body, null, 2));
+    console.log('[CERTIFICATE] Certificate type:', req.body.certificateType);
+    console.log('[CERTIFICATE] Certificate data keys:', Object.keys(req.body));
+    
+    if (req.body.aadhaar) {
+      console.log('[CERTIFICATE] Aadhaar data:', JSON.stringify(req.body.aadhaar, null, 2));
+    }
+    if (req.body.pan) {
+      console.log('[CERTIFICATE] PAN data:', JSON.stringify(req.body.pan, null, 2));
+    }
+    
     const userId = req.user!.sub;
     const certificateData = req.body;
 
@@ -54,6 +66,9 @@ export const uploadCertificate = async (
         qrCode: certificateData.qrCode,
         digitalSignature: certificateData.digitalSignature,
         ...certificateData.metadata,
+        // CRITICAL: Include identity verification data
+        aadhaar: certificateData.aadhaar,
+        pan: certificateData.pan,
       },
       hasQrCode: !!certificateData.qrCode,
       hasDigitalSignature: !!certificateData.digitalSignature,
@@ -61,7 +76,16 @@ export const uploadCertificate = async (
       status: CertificateStatus.PENDING,
     });
 
+    console.log('[CERTIFICATE] ===== BEFORE SAVE =====');
+    console.log('[CERTIFICATE] Certificate data to save:', JSON.stringify(certificate.certificateData, null, 2));
+    console.log('[CERTIFICATE] Has aadhaar?', !!certificate.certificateData.aadhaar);
+    console.log('[CERTIFICATE] Has pan?', !!certificate.certificateData.pan);
+
     await certificateRepository.save(certificate);
+
+    console.log('[CERTIFICATE] ===== AFTER SAVE =====');
+    console.log('[CERTIFICATE] Saved certificate ID:', certificate.id);
+    console.log('[CERTIFICATE] Saved certificateData:', JSON.stringify(certificate.certificateData, null, 2));
 
     logger.info('Certificate uploaded', {
       certificateId: certificate.id,
@@ -72,6 +96,16 @@ export const uploadCertificate = async (
 
     sendSuccess(res, certificate, 'Certificate uploaded successfully', 201);
   } catch (error) {
+    console.log('[CERTIFICATE] ===== CERTIFICATE CREATION ERROR =====');
+    console.log('[CERTIFICATE] Error type:', error instanceof Error ? error.constructor.name : typeof error);
+    console.log('[CERTIFICATE] Error message:', error instanceof Error ? error.message : String(error));
+    if (error instanceof Error && 'issues' in error) {
+      console.log('[CERTIFICATE] Validation issues:', JSON.stringify((error as any).issues, null, 2));
+    }
+    if (error instanceof Error && 'errors' in error) {
+      console.log('[CERTIFICATE] Validation errors:', JSON.stringify((error as any).errors, null, 2));
+    }
+    console.log('[CERTIFICATE] Full error:', error);
     next(error);
   }
 };

@@ -78,11 +78,11 @@ export const RegisterPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full">
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold text-primary-600">Cert Verify</h1>
-          <h2 className="mt-2 text-2xl font-semibold text-gray-900">Create your account</h2>
+          <h2 className="mt-2 text-2xl font-semibold text-gray-900 dark:text-white">Create your account</h2>
         </div>
 
         <Card>
@@ -150,7 +150,7 @@ export const RegisterPage: React.FC = () => {
           </form>
 
           <div className="mt-4 text-center">
-            <p className="text-sm text-gray-600">
+            <p className="text-sm text-gray-600 dark:text-gray-300">
               Already have an account?{' '}
               <Link to="/login" className="text-primary-600 hover:text-primary-700 font-medium">
                 Sign in

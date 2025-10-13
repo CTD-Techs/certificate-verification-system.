@@ -98,8 +98,8 @@ export const VerifierQueuePage: React.FC = () => {
     <Layout>
       <div className="space-y-6">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Review Queue</h1>
-          <p className="mt-1 text-sm text-gray-500">
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Review Queue</h1>
+          <p className="mt-1 text-sm text-gray-600 dark:text-gray-300">
             Pending certificate verifications requiring manual review
           </p>
         </div>
@@ -109,8 +109,8 @@ export const VerifierQueuePage: React.FC = () => {
           <Card>
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-500">Total Pending</p>
-                <p className="mt-1 text-2xl font-bold text-gray-900">{stats?.total || 0}</p>
+                <p className="text-sm text-gray-600 dark:text-gray-300">Total Pending</p>
+                <p className="mt-1 text-2xl font-bold text-gray-900 dark:text-white">{stats?.total || 0}</p>
               </div>
               <div className="p-3 bg-blue-100 rounded-lg">
                 <svg
@@ -133,8 +133,8 @@ export const VerifierQueuePage: React.FC = () => {
           <Card>
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-500">Assigned to Me</p>
-                <p className="mt-1 text-2xl font-bold text-gray-900">{stats?.assigned || 0}</p>
+                <p className="text-sm text-gray-600 dark:text-gray-300">Assigned to Me</p>
+                <p className="mt-1 text-2xl font-bold text-gray-900 dark:text-white">{stats?.assigned || 0}</p>
               </div>
               <div className="p-3 bg-green-100 rounded-lg">
                 <svg
@@ -157,8 +157,8 @@ export const VerifierQueuePage: React.FC = () => {
           <Card>
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-500">In Progress</p>
-                <p className="mt-1 text-2xl font-bold text-gray-900">{stats?.inProgress || 0}</p>
+                <p className="text-sm text-gray-600 dark:text-gray-300">In Progress</p>
+                <p className="mt-1 text-2xl font-bold text-gray-900 dark:text-white">{stats?.inProgress || 0}</p>
               </div>
               <div className="p-3 bg-red-100 rounded-lg">
                 <svg

@@ -74,6 +74,12 @@ This architecture documentation consists of the following comprehensive document
    - Monitoring & maintenance
    - Backup & recovery
 
+9. **[AWS_SETUP_GUIDE.md](./AWS_SETUP_GUIDE.md)** - AWS Services Configuration
+   - Real AWS Textract setup for OCR
+   - Real AWS Bedrock (Claude) setup for field extraction
+   - IAM permissions and S3 bucket configuration
+   - Cost estimation and troubleshooting
+
 ## 🏗️ System Architecture at a Glance
 
 ```
@@ -180,7 +186,28 @@ Final Status: VERIFIED/UNVERIFIED/PENDING
 - Docker Compose 2.x+
 - Node.js 20 LTS (for local development)
 - Git
+- AWS Account (optional, for real document processing)
 ```
+
+### AWS Services Configuration (Optional)
+
+To enable real AWS Textract and Bedrock for document processing:
+
+1. **Review the AWS Setup Guide**: See [AWS_SETUP_GUIDE.md](./AWS_SETUP_GUIDE.md) for detailed instructions
+2. **Configure AWS credentials** in `backend/.env`:
+   ```env
+   AWS_REGION=ap-south-1
+   AWS_ACCESS_KEY_ID=your_access_key_here
+   AWS_SECRET_ACCESS_KEY=your_secret_key_here
+   AWS_S3_BUCKET=certificate-verification-documents
+   AWS_TEXTRACT_MOCK_MODE=false
+   AWS_BEDROCK_MOCK_MODE=false
+   ```
+3. **Create S3 bucket** in ap-south-1 region
+4. **Enable Bedrock model access** for Claude 3.5 Sonnet
+5. **Restart backend** to apply changes
+
+**Note**: Without AWS configuration, the system uses mock services for document processing (verification services remain mocked regardless).
 
 ### Local Development Setup
 ```bash
