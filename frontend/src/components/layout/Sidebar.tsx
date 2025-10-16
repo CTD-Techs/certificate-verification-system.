@@ -57,7 +57,7 @@ export const Sidebar: React.FC = () => {
             <ShieldCheckIcon className="h-6 w-6 text-white" />
           </div>
           <div className="flex flex-col">
-            <h1 className="text-lg font-bold text-gray-900 dark:text-white">VeriDoc</h1>
+            <h1 className="text-lg font-bold text-gray-900 dark:text-white">Veri-Intelli</h1>
             <p className="text-[10px] text-gray-500 dark:text-gray-400">VionixCosmic</p>
           </div>
         </div>

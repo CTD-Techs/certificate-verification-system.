@@ -179,10 +179,13 @@ export const retryVerification = async (
   res: Response,
   next: NextFunction
 ): Promise<void> => {
+  console.log('[CONTROLLER] ===== RETRY VERIFICATION CONTROLLER CALLED =====');
   const { id } = req.params;
   const userId = req.user!.sub;
+  console.log('[CONTROLLER] Params:', { id, userId });
 
   try {
+    console.log('[CONTROLLER] About to call logger.info...');
     // DEBUG: Log retry request
     logger.info('[VERIFICATION] Retry request received', {
       verificationId: id,
@@ -190,8 +193,11 @@ export const retryVerification = async (
       userEmail: req.user!.email,
       userRole: req.user!.role,
     });
+    console.log('[CONTROLLER] logger.info called successfully');
 
+    console.log('[CONTROLLER] About to call orchestrator.retryVerification...');
     const verification = await verificationOrchestrator.retryVerification(id, userId);
+    console.log('[CONTROLLER] orchestrator.retryVerification returned:', verification?.id);
 
     // DEBUG: Log successful retry initiation
     logger.info('[VERIFICATION] Retry initiated successfully', {
@@ -201,8 +207,15 @@ export const retryVerification = async (
       certificateId: verification.certificateId,
     });
 
+    console.log('[CONTROLLER] About to send success response...');
     sendSuccess(res, verification, 'Verification retry started successfully');
+    console.log('[CONTROLLER] Success response sent');
   } catch (error) {
+    console.log('[CONTROLLER] ===== ERROR CAUGHT =====');
+    console.log('[CONTROLLER] Error type:', error instanceof Error ? error.constructor.name : typeof error);
+    console.log('[CONTROLLER] Error message:', error instanceof Error ? error.message : String(error));
+    console.log('[CONTROLLER] Error stack:', error instanceof Error ? error.stack : 'No stack');
+    
     // DEBUG: Log retry error with full details
     logger.error('[VERIFICATION] Retry failed', {
       verificationId: id,
@@ -212,7 +225,9 @@ export const retryVerification = async (
       errorStack: error instanceof Error ? error.stack : undefined,
     });
     
+    console.log('[CONTROLLER] About to call next(error)...');
     next(error);
+    console.log('[CONTROLLER] next(error) called');
   }
 };
 

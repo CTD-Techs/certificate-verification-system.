@@ -32,7 +32,7 @@ export const Header: React.FC = () => {
           {/* Brand Text */}
           <div className="flex flex-col">
             <h1 className="text-xl font-bold text-gray-900 dark:text-white">
-              VeriDoc
+              Veri-Intelli
             </h1>
             <p className="text-xs text-gray-500 dark:text-gray-400">
               Document Verification

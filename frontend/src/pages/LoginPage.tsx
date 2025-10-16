@@ -47,7 +47,7 @@ export const LoginPage: React.FC = () => {
             </div>
           </div>
           
-          <h1 className="text-5xl font-bold gradient-text mb-2">VeriDoc</h1>
+          <h1 className="text-5xl font-bold gradient-text mb-2">Veri-Intelli</h1>
           <p className="text-lg text-gray-400 font-medium mb-1">
             by <span className="gradient-text-secondary">VionixCosmic</span>
           </p>

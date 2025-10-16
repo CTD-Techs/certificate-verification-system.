@@ -29,6 +29,87 @@ interface ExtractedData {
 
 type ProcessingState = 'idle' | 'uploading' | 'processing' | 'completed' | 'error';
 
+/**
+ * Parse address string into components for PAN card
+ * Example: "123 Main Street, Andheri West, Mumbai, Maharashtra - 400053"
+ */
+const parseAddress = (addressString: string): ExtractedData['address'] => {
+  if (!addressString) {
+    return {
+      line1: '',
+      line2: '',
+      city: '',
+      state: '',
+      pincode: '',
+    };
+  }
+
+  // Extract pincode (6 digits, usually at the end)
+  const pincodeMatch = addressString.match(/\b(\d{6})\b/);
+  const pincode = pincodeMatch ? pincodeMatch[1] : '';
+
+  // Extract state (common Indian states)
+  const statePattern = /(Maharashtra|Karnataka|Tamil Nadu|Kerala|Gujarat|Rajasthan|Punjab|Haryana|Uttar Pradesh|Madhya Pradesh|Bihar|West Bengal|Andhra Pradesh|Telangana|Odisha|Assam|Jharkhand|Chhattisgarh|Uttarakhand|Himachal Pradesh|Goa|Delhi|Jammu and Kashmir|Ladakh|Puducherry|Chandigarh|Sikkim|Meghalaya|Manipur|Mizoram|Nagaland|Tripura|Arunachal Pradesh)/i;
+  const stateMatch = addressString.match(statePattern);
+  const state = stateMatch ? stateMatch[1] : '';
+
+  // Split address by commas
+  const parts = addressString.split(',').map(p => p.trim());
+
+  // Try to identify components
+  let line1 = '';
+  let line2 = '';
+  let city = '';
+
+  if (parts.length >= 3) {
+    // First part is usually line1 (house/building/street)
+    line1 = parts[0];
+    // Second part is line2 (locality/area)
+    line2 = parts[1];
+    // Third part or the one before state is city
+    const cityIndex = parts.findIndex(p => p.toLowerCase().includes(state.toLowerCase()));
+    if (cityIndex > 0) {
+      city = parts[cityIndex - 1];
+    } else if (parts.length > 2) {
+      city = parts[parts.length - 2].replace(/\s*-\s*\d{6}/, '').trim();
+    }
+  } else if (parts.length === 2) {
+    line1 = parts[0];
+    city = parts[1].replace(/\s*-\s*\d{6}/, '').trim();
+  } else {
+    line1 = addressString.replace(/\s*-\s*\d{6}/, '').replace(state, '').trim();
+  }
+
+  return {
+    line1,
+    line2,
+    city,
+    state,
+    pincode,
+  };
+};
+
+/**
+ * Convert date from DD/MM/YYYY to YYYY-MM-DD format
+ */
+const convertDateFormat = (dateString: string): string => {
+  if (!dateString) return '';
+  
+  // Handle DD/MM/YYYY or DD-MM-YYYY format
+  const match = dateString.match(/^(\d{2})[\/\-](\d{2})[\/\-](\d{4})$/);
+  if (match) {
+    const [, day, month, year] = match;
+    return `${year}-${month}-${day}`;
+  }
+  
+  // If already in YYYY-MM-DD format, return as is
+  if (/^\d{4}-\d{2}-\d{2}$/.test(dateString)) {
+    return dateString;
+  }
+  
+  return dateString;
+};
+
 export const PANCardForm: React.FC<PANCardFormProps> = ({
   onSubmit,
   onCancel,
@@ -43,11 +124,15 @@ export const PANCardForm: React.FC<PANCardFormProps> = ({
   const [editedData, setEditedData] = useState<ExtractedData | null>(null);
 
   const handleFileSelect = async (file: File) => {
-    setSelectedFile(file);
-    setError(null);
-    setProcessingState('uploading');
-
+    console.log('[PANCardForm] handleFileSelect called with:', file.name);
+    
     try {
+      setSelectedFile(file);
+      setError(null);
+      setProcessingState('uploading');
+      
+      console.log('[PANCardForm] State updated, calling uploadPAN...');
+
       // Upload and process the document
       const result = await documentProcessingService.uploadPAN(file);
       
@@ -65,6 +150,13 @@ export const PANCardForm: React.FC<PANCardFormProps> = ({
       // Poll for processing completion
       await pollProcessingStatus(result.id);
     } catch (err: any) {
+      console.error('[PANCardForm] Error in handleFileSelect:', err);
+      console.error('[PANCardForm] Error details:', {
+        message: err.message,
+        response: err.response,
+        status: err.response?.status,
+        data: err.response?.data
+      });
       setError(err.response?.data?.message || 'Failed to upload document. Please try again.');
       setProcessingState('error');
     }
@@ -81,8 +173,32 @@ export const PANCardForm: React.FC<PANCardFormProps> = ({
         if (status.status === 'completed') {
           // Fetch extracted data
           const data = await documentProcessingService.getExtractedData(id);
-          setExtractedData(data.extractedFields as ExtractedData);
-          setEditedData(data.extractedFields as ExtractedData);
+          
+          // Map backend fields to frontend structure
+          const backendFields = data.extractedFields as any;
+          console.log('[PANCardForm] Backend extracted fields:', backendFields);
+          
+          // Parse address if it's a string, otherwise use as-is
+          const addressData = typeof backendFields.address === 'string'
+            ? parseAddress(backendFields.address)
+            : backendFields.address || { line1: '', line2: '', city: '', state: '', pincode: '' };
+          
+          const mappedData: ExtractedData = {
+            panNumber: backendFields.panNumber || '',
+            holderName: backendFields.name || backendFields.holderName || '',
+            fatherName: backendFields.fatherName || '',
+            dateOfBirth: backendFields.dateOfBirth ? convertDateFormat(backendFields.dateOfBirth) : '',
+            category: backendFields.category || 'Individual',
+            address: addressData,
+            photoUrl: backendFields.photoUrl,
+            signatureUrl: backendFields.signatureUrl,
+            aadhaarLinked: backendFields.aadhaarLinked || false,
+          };
+          
+          console.log('[PANCardForm] Mapped data:', mappedData);
+          
+          setExtractedData(mappedData);
+          setEditedData(mappedData);
           setProcessingState('completed');
         } else if (status.status === 'failed') {
           setError('Document processing failed. Please try uploading again.');
@@ -146,15 +262,69 @@ export const PANCardForm: React.FC<PANCardFormProps> = ({
   };
 
   const handleConfirmAndVerify = () => {
-    if (!extractedData) return;
+    if (!extractedData) {
+      console.error('[PANCardForm] No extracted data available');
+      setError('No data available to verify');
+      return;
+    }
 
+    // Validate required fields
+    const validationErrors: string[] = [];
+    
+    if (!extractedData.holderName || extractedData.holderName.trim() === '') {
+      validationErrors.push('Full Name is required');
+    }
+    if (!extractedData.panNumber || extractedData.panNumber.trim() === '') {
+      validationErrors.push('PAN Number is required');
+    }
+    if (!extractedData.dateOfBirth || extractedData.dateOfBirth.trim() === '') {
+      validationErrors.push('Date of Birth is required');
+    }
+    
+    if (validationErrors.length > 0) {
+      console.error('[PANCardForm] Validation errors:', validationErrors);
+      setError(`Invalid data: ${validationErrors.join(', ')}`);
+      return;
+    }
+
+    // Clear any previous errors
+    setError(null);
+
+    // Map frontend field names to backend expected names with null checks
     const requestData = {
-      certificateType: 'PAN_CARD',
-      issuerType: 'INCOME_TAX',
-      issuerName: 'Income Tax Department',
-      panData: extractedData,
+      certificateType: 'PAN_CARD' as const,
+      issuerType: 'INCOME_TAX' as const,
+      issuerName: 'Income Tax Department' as const,
+      pan: {  // Backend expects 'pan', not 'panData'
+        panNumber: extractedData.panNumber?.replace(/\s/g, '') || '',
+        name: extractedData.holderName || '',
+        fatherName: extractedData.fatherName || '',
+        dob: extractedData.dateOfBirth || '',
+        category: extractedData.category || 'Individual',
+        address: {
+          line1: extractedData.address?.line1 || '',
+          line2: extractedData.address?.line2 || '',
+          city: extractedData.address?.city || '',
+          state: extractedData.address?.state || '',
+          pincode: extractedData.address?.pincode || '',
+        },
+        aadhaarLinked: extractedData.aadhaarLinked || false,
+      },
       documentProcessingId: processingId,
     };
+
+    console.log('[PAN] ===== SUBMITTING TO BACKEND =====');
+    console.log('[PAN] Original extracted data:', JSON.stringify(extractedData, null, 2));
+    console.log('[PAN] Transformed payload:', JSON.stringify(requestData, null, 2));
+    console.log('[PAN] Payload structure check:');
+    console.log('[PAN]   - certificateType:', requestData.certificateType);
+    console.log('[PAN]   - issuerType:', requestData.issuerType);
+    console.log('[PAN]   - issuerName:', requestData.issuerName);
+    console.log('[PAN]   - pan object:', requestData.pan);
+    console.log('[PAN]   - pan.panNumber:', requestData.pan.panNumber);
+    console.log('[PAN]   - pan.name:', requestData.pan.name);
+    console.log('[PAN]   - pan.dob:', requestData.pan.dob);
+    console.log('[PAN]   - pan.address:', JSON.stringify(requestData.pan.address, null, 2));
 
     onSubmit(requestData);
   };

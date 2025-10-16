@@ -20,7 +20,10 @@ export const validate = (schema: AnyZodObject) => {
       });
       
       console.log('[VALIDATOR] ===== VALIDATION PASSED =====');
-      return next();
+      console.log('[VALIDATOR] Calling next() to proceed to controller...');
+      next();
+      console.log('[VALIDATOR] next() called successfully');
+      return;
     } catch (error) {
       console.log('[VALIDATOR] ===== VALIDATION ERROR =====');
       console.log('[VALIDATOR] Error type:', error instanceof Error ? error.constructor.name : typeof error);
